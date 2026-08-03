@@ -1,0 +1,15 @@
+{
+  "name": "shine-for-good-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static website for Shine for Good",
+  "scripts": {
+    "audit:routes": "node scripts/audit-routes.mjs",
+    "dev": "http-server . -p 4173 -c-1 -o /index.html",
+    "start": "npm run dev",
+    "dev:py": "python3 -m http.server 4173"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
