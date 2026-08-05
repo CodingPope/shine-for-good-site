@@ -13,27 +13,28 @@ function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
 /* ---------- defaults, overridable from the edit panel ---------- */
 var CFG = {
   phone: "305-304-9579",
-  email: "hello@shineforgood.com",
+  email: "cmsawyer12@gmail.com",
   areas: ["St. Petersburg","Tampa","Clearwater","Gulfport","St. Pete Beach","Treasure Island","Pinellas Park","Seminole","South Tampa","Kenneth City"],
-  rate: 0.11, min: 135, bathExtra: 25, bedExtra: 18,
-  deepMult: 1.50, moveMult: 1.60, bizMult: 1.05, orgRate: 60,
+  rate: 0.11, min: 110, bathExtra: 25, bedExtra: 18,
+  deepMult: 1.64, moveMult: 1.60, bizMult: 1.05, orgRate: 60,
   wk: 20, bi: 15, mo: 10, spread: 10, give: 10
 };
 
 var ADDONS = [
-  { id:"fridge",  name:"Inside the fridge",  price:35 },
-  { id:"oven",    name:"Inside the oven",    price:35 },
-  { id:"windows", name:"Interior windows",   price:50 },
-  { id:"base",    name:"Baseboards by hand", price:35 },
-  { id:"cab",     name:"Inside cabinets",    price:45 },
-  { id:"laundry", name:"Wash and fold",      price:30 },
-  { id:"pet",     name:"Heavy pet hair",     price:30 },
-  { id:"garage",  name:"Garage or lanai",    price:55 }
+  { id:"fridge",  name:"Inside the fridge",  price:30 },
+  { id:"oven",    name:"Inside the oven",    price:30 },
+  { id:"windows", name:"Interior windows",   price:45 },
+  { id:"base",    name:"Baseboards by hand", price:30 },
+  { id:"cab",     name:"Inside cabinets",    price:40 },
+  { id:"laundry", name:"Wash and fold",      price:25 },
+  { id:"pet",     name:"Heavy pet hair",     price:25 },
+  { id:"garage",  name:"Garage or lanai",    price:50 }
 ];
 
 var SVC_LABELS = {
   standard: "Standard clean", deep: "Deep clean",
-  move: "Move-in or move-out clean", biz: "Small business clean"
+  move: "Move-in or move-out clean", biz: "Small business clean",
+  post: "Post-construction clean"
 };
 
 /* ---------- storage ---------- */
@@ -267,7 +268,7 @@ function renderEstimator() {
   if (!hasEst) return;
   var svcChips = [
     ["standard","Residential"], ["deep","Deep"], ["organize","Organization"],
-    ["move","Move-in / out"], ["biz","Business"]
+    ["move","Move-in / out"], ["biz","Business"], ["post","Post-construction"]
   ];
   $("#chipService").innerHTML = svcChips.map(function (s) { return chip(s[0], s[1], "", s[0] === E.svc); }).join("");
   $("#chipBed").innerHTML  = [1,2,3,4,5,6].map(function (n) { return chip(n, n === 6 ? "6+" : n, "", n === E.bed); }).join("");
@@ -339,6 +340,9 @@ function calc() {
     base = hours * CFG.orgRate;
     baseLab = hours + " hours at " + money(CFG.orgRate) + "/hr";
     forLine = "Home organization, roughly " + hours + " hours";
+  } else if (E.svc === "post") {
+    base = Math.max(CFG.min * 2, E.sqft * CFG.rate * CFG.deepMult * 1.2);
+    forLine = "Post-construction clean, one time";
   } else {
     base = Math.max(CFG.min, E.sqft * CFG.rate);
     base += Math.max(0, E.bath - 2) * CFG.bathExtra;

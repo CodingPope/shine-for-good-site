@@ -50,7 +50,7 @@
       <p class="eyebrow">Pricing</p>
       <h1>What cleaning actually costs around here</h1>
       <div class="orn orn--left" aria-hidden="true"><i></i></div>
-      <p class="lede">No forms to fill in before you see a number. Move the dials, get a real range, and send it over only if you want to.</p>
+      <p class="lede">Tell us about your space, pick your add-ons, and send your details to Chelsea for a custom quote. She will reach out directly.</p>
     </div>
   </div>
 </header><section class="sec est" id="estimate">
@@ -83,26 +83,22 @@
 </div></div>
   <div class="result rv rv-d2">
     <div class="bloom">
-      <p class="res-lab">Your estimate</p>
-      <p class="res-range" id="resRange">$125 <span class="to">to</span> $155</p>
+      <p class="res-lab">Request a quote</p>
+      <p class="res-range" id="resRange" style="display:none">$125 <span class="to">to</span> $155</p>
       <p class="res-for" id="resFor">Standard clean, every two weeks</p>
       <div class="res-rule"></div>
-      <div class="res-row"><span id="resBaseLab">Base clean</span><b id="resBase">$165</b></div>
-      <div class="res-row" id="resAddRow" hidden><span>Add-ons</span><b id="resAdd">$0</b></div>
-      <div class="res-save" id="resSaveRow" hidden><span id="resSaveLab">Recurring discount</span><b id="resSave">-$0</b></div>
+      <div class="res-row" style="display:none"><span id="resBaseLab">Base clean</span><b id="resBase">$165</b></div>
+      <div class="res-row" id="resAddRow" style="display:none"><span>Add-ons</span><b id="resAdd">$0</b></div>
+      <div class="res-save" id="resSaveRow" style="display:none"><span id="resSaveLab">Recurring discount</span><b id="resSave">-$0</b></div>
       <div class="give">
         <div class="give-top">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
-          <span>Included in that price</span>
+          <span>Something good happens here</span>
         </div>
-        <p><b id="giveAmt">$14</b> <span data-edit="giveLine">of this clean goes to adults with disabilities in Tampa Bay.</span></p>
+        <p><b id="giveAmt" style="display:none">$14</b><span data-edit="giveLine">10% of every clean goes to the Marc House in Key West.</span></p>
       </div>
-      <p class="res-fine" data-edit="estFine">This is an estimate, not a quote. Most homes land near the middle of this range. Chelsea confirms the final price after a quick look at the space, and it never goes up on cleaning day without you agreeing to it first.</p>
-      <div class="res-actions">
-        <button class="btn btn--solid" id="sendToggle" type="button">Send this to Chelsea</button>
-        <a class="btn btn--ghost" href="tel:+13053049579" data-tel-href>Rather just talk? Call</a>
-      </div>
-      <div class="send" id="sendPanel">
+      <p class="res-fine" data-edit="estFine">Fill in your details and Chelsea will reach out with a custom quote. No automated responses, no pressure.</p>
+      <div class="send is-on" id="sendPanel">
         <input class="inp" id="qName" type="text" placeholder="Your name" autocomplete="name">
         <input class="inp" id="qPhone" type="tel" placeholder="Phone number" autocomplete="tel">
         <input class="inp" id="qAddr" type="text" placeholder="Neighborhood or address" autocomplete="street-address">
@@ -113,21 +109,22 @@
         </div>
         <p class="res-fine">Your details go straight to Chelsea's phone. No mailing list, no automated follow-up sequence.</p>
       </div>
+      <a class="btn btn--ghost" href="tel:+13053049579" data-tel-href style="margin-top:.8rem;display:block;text-align:center">Rather just talk? Call</a>
     </div>
   </div>
 </div>
 <div class="est-bar" id="estBar">
-  <div><span class="lab">Your estimate</span><b id="estBarVal">$125 to $155</b></div>
-  <button class="btn btn--solid" id="estBarBtn" type="button">See the details</button>
+  <div><span class="lab">Get your quote</span><b id="estBarVal" style="display:none">$125 to $155</b></div>
+  <button class="btn btn--solid" id="estBarBtn" type="button">Send to Chelsea</button>
 </div></div>
 </section>
 
 <section class="sec sec--tint">
   <div class="wrap">
     <div class="sec-head rv">
-      <p class="eyebrow">How the number is built</p>
+      <p class="eyebrow">How the quote is built</p>
       <h2>Nothing here is a mystery.</h2>
-      <p class="lede">Square footage sets the base. Bathrooms and bedrooms past the standard add a little. Deep cleans and move-outs take longer so they cost more. Booking regularly takes cost out, because a maintained home is faster to clean than a neglected one.</p>
+      <p class="lede">Square footage sets the base. Bathrooms and bedrooms past the standard add a little. Deep cleans and move-outs take longer so they cost more. Booking regularly takes cost out, because a maintained home is faster to clean than a neglected one. Chelsea confirms the final price after reviewing the details you send — it never changes on cleaning day without your approval.</p>
     </div>
     <div class="steps rv">
       <div class="step"><div><h3>Base rate by size</h3><p>Charged per square foot with a minimum, because a 700 square foot condo still takes a full setup and pack-down.</p></div></div>
@@ -144,10 +141,10 @@
     <div class="sec-head rv"><p class="eyebrow">Questions</p><h2>About pricing<br>and booking.</h2></div>
     <div class="rv"><div class="faq"><div class="faq-i">
   <button class="faq-q" aria-expanded="false"><span>How much does house cleaning cost in St. Pete and Tampa?</span><span class="svc-plus" aria-hidden="true"></span></button>
-  <div class="faq-a"><p>A standard clean on a 1,500 square foot home usually lands between $140 and $175. A deep clean on that same home usually lands between $210 and $260. Square footage, bathroom count and the current condition of the home move the number. The estimate builder will give you a range in under a minute.</p></div>
+  <div class="faq-a"><p>A standard clean starts from $110 for a small studio. A deep clean starts from $180. Square footage, bathroom count and the current condition of the home move the number. Fill out the quote builder and Chelsea will reach out with a custom price.</p></div>
 </div><div class="faq-i">
   <button class="faq-q" aria-expanded="false"><span>How do I pay?</span><span class="svc-plus" aria-hidden="true"></span></button>
-  <div class="faq-a"><p>Card, Venmo, Zelle or cash, due on the day of service. Recurring clients can keep a card on file and get charged automatically after each visit.</p></div>
+  <div class="faq-a"><p>Venmo, Zelle or cash, due on the day of service.</p></div>
 </div><div class="faq-i">
   <button class="faq-q" aria-expanded="false"><span>How far ahead do I need to book?</span><span class="svc-plus" aria-hidden="true"></span></button>
   <div class="faq-a"><p>One to two weeks is typical for a first deep clean. Recurring visits get a standing day and time so you never have to think about it again. Move-out cleans can sometimes be fit in within a few days, so it is always worth asking.</p></div>
@@ -221,7 +218,7 @@
     </div>
     <div class="foot-bot">
       <span>&copy; <span id="yr">2026</span> Shine for Good. All rights reserved.</span>
-      <span>Licensed and insured &middot; Serving Pinellas &amp; Hillsborough</span>
+      <span>Licensed and insured &middot; Serving St. Pete &amp; Tampa Bay</span>
     </div>
   </div>
 </footer>
