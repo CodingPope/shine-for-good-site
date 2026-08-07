@@ -1,3 +1,19 @@
 node_modules/
 .vercel/
 .DS_Store
+
+# Next.js
+.next/
+out/
+*.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Payload generated
+src/payload-types.ts
+src/app/(payload)/admin/importMap.js
+
+# Dependencies
+node_modules/
