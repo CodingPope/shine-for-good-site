@@ -12,15 +12,20 @@ export const metadata: Metadata = {
 export const revalidate = 60
 
 export default async function JournalPage() {
-  const payload = await getPayload({ config })
-
-  const { docs: posts } = await payload.find({
-    collection: 'journal-posts',
-    where: { _status: { equals: 'published' } },
-    sort: '-publishedAt',
-    limit: 24,
-    depth: 1,
-  })
+  let posts: any[] = []
+  try {
+    const payload = await getPayload({ config })
+    const { docs } = await payload.find({
+      collection: 'journal-posts',
+      where: { _status: { equals: 'published' } },
+      sort: '-publishedAt',
+      limit: 24,
+      depth: 1,
+    })
+    posts = docs
+  } catch {
+    posts = []
+  }
 
   return (
     <>

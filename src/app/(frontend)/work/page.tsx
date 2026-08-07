@@ -13,12 +13,20 @@ export const metadata: Metadata = {
 export const revalidate = 60
 
 export default async function WorkPage() {
-  const payload = await getPayload({ config })
-
-  const [{ docs: baItems }, { docs: gallery }] = await Promise.all([
-    payload.find({ collection: 'before-after', sort: 'order', limit: 20, depth: 1 }),
-    payload.find({ collection: 'work-gallery', sort: 'order', limit: 12, depth: 1 }),
-  ])
+  let baItems: any[] = []
+  let gallery: any[] = []
+  try {
+    const payload = await getPayload({ config })
+    const [baResult, galleryResult] = await Promise.all([
+      payload.find({ collection: 'before-after', sort: 'order', limit: 20, depth: 1 }),
+      payload.find({ collection: 'work-gallery', sort: 'order', limit: 12, depth: 1 }),
+    ])
+    baItems = baResult.docs
+    gallery = galleryResult.docs
+  } catch {
+    baItems = []
+    gallery = []
+  }
 
   const featured = baItems.find(item => item.featured) || baItems[0] || null
   const featuredBefore = (featured?.beforeImage as any) ?? null

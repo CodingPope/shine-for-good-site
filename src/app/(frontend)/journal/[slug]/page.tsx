@@ -8,14 +8,18 @@ import { notFound } from 'next/navigation'
 export const revalidate = 60
 
 export async function generateStaticParams() {
-  const payload = await getPayload({ config })
-  const { docs } = await payload.find({
-    collection: 'journal-posts',
-    where: { _status: { equals: 'published' } },
-    limit: 100,
-    select: { slug: true },
-  })
-  return docs.map(doc => ({ slug: doc.slug }))
+  try {
+    const payload = await getPayload({ config })
+    const { docs } = await payload.find({
+      collection: 'journal-posts',
+      where: { _status: { equals: 'published' } },
+      limit: 100,
+      select: { slug: true },
+    })
+    return docs.map(doc => ({ slug: doc.slug }))
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
