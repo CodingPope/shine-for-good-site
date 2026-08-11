@@ -54,7 +54,13 @@ function money(n: number) {
   return '$' + Math.round(n).toLocaleString('en-US')
 }
 
-export function PricingEstimator() {
+interface PricingEstimatorProps {
+  eyebrow?: string
+  heading?: React.ReactNode
+  lede?: string
+}
+
+export function PricingEstimator({ eyebrow, heading, lede }: PricingEstimatorProps = {}) {
   const [svc, setSvc] = useState<string>('standard')
   const [sqft, setSqft] = useState(1500)
   const [bed, setBed] = useState(3)
@@ -142,6 +148,13 @@ export function PricingEstimator() {
   return (
     <section className="sec est" id="estimate">
       <div className="wrap">
+        {(eyebrow || heading || lede) && (
+          <div className="sec-head rv">
+            {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+            {heading && <h2>{heading}</h2>}
+            {lede && <p className="lede">{lede}</p>}
+          </div>
+        )}
         <div className="est-grid">
           <div className="rv">
             <div className="field">

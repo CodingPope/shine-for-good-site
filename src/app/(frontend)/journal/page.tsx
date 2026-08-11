@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import Link from 'next/link'
 import Image from 'next/image'
+import type { JournalPost, Media } from '@/payload-types'
 
 export const metadata: Metadata = {
   title: 'Journal',
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 export const revalidate = 60
 
 export default async function JournalPage() {
-  let posts: any[] = []
+  let posts: JournalPost[] = []
   try {
     const payload = await getPayload({ config })
     const { docs } = await payload.find({
@@ -55,7 +56,7 @@ export default async function JournalPage() {
           ) : (
             <div className="cards">
               {posts.map((post) => {
-              const cover = (post.coverImage as any) ?? null
+              const cover = (post.coverImage as Media) ?? null
                 return (
                   <Link key={post.id} className="card rv" href={`/journal/${post.slug}`}>
                     {cover?.url && (

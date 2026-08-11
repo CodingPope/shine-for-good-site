@@ -4,7 +4,7 @@ import config from '@payload-config'
 import Link from 'next/link'
 import Image from 'next/image'
 import { BeforeAfterSlider } from '@/components/BeforeAfterSlider'
-import type { Media } from '@/payload-types'
+import type { BeforeAfter, Media, WorkGallery } from '@/payload-types'
 
 export const metadata: Metadata = {
   title: 'Our Work',
@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 export const revalidate = 60
 
 export default async function WorkPage() {
-  let baItems: any[] = []
-  let gallery: any[] = []
+  let baItems: BeforeAfter[] = []
+  let gallery: WorkGallery[] = []
   try {
     const payload = await getPayload({ config })
     const [baResult, galleryResult] = await Promise.all([
@@ -30,8 +30,8 @@ export default async function WorkPage() {
   }
 
   const featured = baItems.find(item => item.featured) || baItems[0] || null
-  const featuredBefore = (featured?.beforeImage as any) ?? null
-  const featuredAfter = (featured?.afterImage as any) ?? null
+  const featuredBefore = (featured?.beforeImage as Media) ?? null
+  const featuredAfter = (featured?.afterImage as Media) ?? null
 
   const reviews = [
     { text: "Couldn\u2019t recommend Shine for Good more. They\u2019re incredibly thorough, trustworthy, and always leave my apartment feeling so fresh and cared for.", name: 'Emma I.', location: 'St. Petersburg' },

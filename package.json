@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.84.1",
+    "@payloadcms/live-preview-react": "^3.87.1",
     "@payloadcms/next": "^3.84.1",
     "@payloadcms/richtext-lexical": "^3.84.1",
     "@payloadcms/storage-vercel-blob": "^3.84.1",
@@ -30,6 +31,8 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^15.3.9",
     "typescript": "^5.8.0"
   },
   "allowScripts": {

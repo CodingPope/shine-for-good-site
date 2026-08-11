@@ -1,84 +1,66 @@
 # Shine for Good — website
 
-A plain static site. No build step, no framework, no dependencies. Upload the
-folder and it works.
+Marketing site and CMS for Shine for Good, a house cleaning business in St.
+Petersburg & Tampa Bay. Next.js 15 (App Router) with Payload CMS 3, backed by
+Postgres. Content — journal posts, before/after photos, the work gallery — is
+managed through the Payload admin panel, not hardcoded in the repo.
+
+## Stack
+
+- **Next.js 15** (App Router, React 19) — `src/app/(frontend)` for the public
+  site, `src/app/(payload)` for the admin panel and REST API.
+- **Payload CMS 3** — `src/collections/` defines the content model
+  (`journal-posts`, `before-after`, `work-gallery`, `media`, `users`).
+  Config lives in `src/payload.config.ts`.
+- **Postgres** via `@payloadcms/db-postgres`.
+- **Vercel Blob** for media uploads in production (`BLOB_READ_WRITE_TOKEN`).
+- Styling is a single hand-written stylesheet at `public/assets/site.css`,
+  imported globally — there's no CSS framework or CSS-in-JS.
 
 ## Quick start (local)
 
-### Option 1: Node (recommended)
-
 ```bash
 npm install
+cp .env.example .env.local   # fill in DATABASE_URL, PAYLOAD_SECRET, etc.
 npm run dev
 ```
 
-Open `http://localhost:4173`.
+Open `http://localhost:3000` for the site, `http://localhost:3000/admin` for
+the CMS (first run prompts you to create an admin user).
 
-### Option 2: Python
+### Environment variables
 
-```bash
-python3 -m http.server 4173
-```
+See `.env.example`. At minimum you need `DATABASE_URL` (a Postgres instance —
+Neon or Vercel Postgres both work) and `PAYLOAD_SECRET` (`openssl rand -hex
+32`). `BLOB_READ_WRITE_TOKEN` is only required for media uploads to persist in
+production; without it, uploads fall back to local disk storage, which
+doesn't survive a Vercel deploy.
 
-Open `http://localhost:4173`.
+## Scripts
 
-## Deploying
-
-**Netlify / Vercel / Cloudflare Pages** — drag this folder onto the dashboard.
-Nothing to configure. `404.html` is picked up automatically by all three.
-
-**Any normal web host** — upload everything by FTP to the public folder.
-
-**Testing locally** — run `npm run dev` or `python3 -m http.server 4173`.
-
-**Checking routes locally** — run `npm run audit:routes` to verify that all
-internal page links and local hash links resolve.
-
-## Files
-
-| File | Page |
+| Command | Does |
 |---|---|
-| `index.html` | Home |
-| `services.html` | Services hub |
-| `residential-cleaning.html` | Service page |
-| `deep-cleaning.html` | Service page |
-| `home-organization.html` | Service page |
-| `move-in-move-out.html` | Service page |
-| `small-business-cleaning.html` | Service page |
-| `pricing.html` | Estimate builder + how pricing works |
-| `work.html` | Before/after + gallery |
-| `giving-back.html` | The 10% |
-| `about.html` | About Chelsea |
-| `faq.html` | 10 questions |
-| `journal.html` | Blog index |
-| `journal-*.html` | Individual posts |
-| `contact.html` | Contact |
-| `404.html` | Not found |
-| `assets/site.css` | All styling |
-| `assets/site.js` | All behaviour |
-| `sitemap.xml`, `robots.txt` | Search engines |
+| `npm run dev` | Start the Next.js dev server |
+| `npm run build` | Run pending Payload migrations, then build for production |
+| `npm start` | Start the production server (after `build`) |
+| `npm run db:migrate` | Run Payload/Drizzle migrations manually |
+| `npm run generate:types` | Regenerate `src/payload-types.ts` from the collection config |
 
-## Editing without touching code
+## Content model
 
-Add `?edit=1` to any URL, or press `Ctrl + Shift + E`.
+- **Journal posts** (`journal-posts`) — blog content, rendered at
+  `/journal/[slug]`. Supports Payload's versioning/drafts and Live Preview
+  (open a post in `/admin` and use the Live Preview tab to see edits
+  side-by-side before publishing).
+- **Before & after** (`before-after`) — photo pairs rendered as draggable
+  comparison sliders on `/work`.
+- **Work gallery** (`work-gallery`) — single photos in the gallery grid on
+  `/work`.
+- **Media** (`media`) — the upload collection backing all of the above.
 
-Anything with a dotted outline can be clicked and rewritten. The side panel
-handles the phone number, email, service areas, photo URLs and all ten pricing
-dials. Changes save in that browser and follow you from page to page.
+## Routes worth knowing
 
-- **Download changes** exports `shine-content.json`, the full set of edits.
-- **Download this page** exports the current page with edits baked into the HTML.
-
-## Adding a blog post
-
-Copy any `journal-*.html`, change the content, and add a link from
-`journal.html`.
-
-## Before launch
-
-1. Replace any hardcoded `https://shineforgood.com` URLs in HTML metadata,
-   canonicals, and schema with your real domain.
-2. Add a `social-card.jpg` (1200x630) to the root for link previews.
-3. Swap in real photos via the edit panel, or point `data-img` at your files.
-4. Fill in the bracketed sections of `journal-where-the-ten-percent-went.html`.
-5. Submit `sitemap.xml` in Google Search Console.
+- `src/app/sitemap.ts` / `src/app/robots.ts` — generated dynamically (the
+  sitemap pulls in published journal posts automatically), not static files.
+- `src/app/(frontend)/next/preview` / `.../next/exit-preview` — draft-mode
+  routes that power Payload Live Preview.

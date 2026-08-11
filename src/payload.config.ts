@@ -21,10 +21,18 @@ export default buildConfig({
       titleSuffix: '— Shine for Good',
     },
     livePreview: {
+      collections: ['journal-posts'],
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
         { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
       ],
+      url: ({ data, collectionConfig }) => {
+        const serverURL = process.env.NEXT_PUBLIC_SERVER_URL || ''
+        if (collectionConfig?.slug === 'journal-posts' && data?.slug) {
+          return `${serverURL}/next/preview?path=${encodeURIComponent(`/journal/${data.slug}`)}`
+        }
+        return serverURL
+      },
     },
   },
   collections: [Users, Media, JournalPosts, BeforeAfter, WorkGallery],

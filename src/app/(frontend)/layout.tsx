@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { ScrollReveal } from '@/components/ScrollReveal'
@@ -8,7 +7,15 @@ import '../globals.css'
 export const metadata: Metadata = {
   title: { default: 'Shine for Good | St. Pete & Tampa Bay Cleaning', template: '%s | Shine for Good' },
   description: 'Residential cleaning, deep cleaning, home organization, and more across St. Pete and Tampa Bay. Every clean gives back to the Marc House in Key West.',
-  metadataBase: new URL('https://www.shine-for-good.com'),
+  metadataBase: new URL('https://shine-for-good.com'),
+  openGraph: {
+    type: 'website',
+    siteName: 'Shine for Good',
+    url: 'https://shine-for-good.com',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 }
 
 export default function FrontendLayout({ children }: { children: React.ReactNode }) {
@@ -32,7 +39,6 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
         <main id="main">{children}</main>
         <Footer />
         <div className="toast" id="toast" role="status" aria-live="polite" />
-        <Script src="/assets/site.js" strategy="afterInteractive" />
       </body>
     </html>
   )

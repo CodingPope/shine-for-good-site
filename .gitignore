@@ -11,9 +11,9 @@ out/
 .env.test.local
 .env.production.local
 
+# TypeScript
+*.tsbuildinfo
+
 # Payload generated
 src/payload-types.ts
 src/app/(payload)/admin/importMap.js
-
-# Dependencies
-node_modules/

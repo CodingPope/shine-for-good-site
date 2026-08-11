@@ -41,7 +41,10 @@ export function Footer({ phone = '305-304-9579', email = 'cmsawyer12@gmail.com' 
               Where every clean makes a difference. Residential and small business cleaning across St. Petersburg and Tampa.
             </p>
             <div className="orn orn--left" aria-hidden="true"><i /></div>
-            <p style={{ fontSize: '.78rem', margin: 0 }}>Chelsea Sawyer, owner</p>
+            <p style={{ fontSize: '.72rem', opacity: .7, maxWidth: '34ch', margin: 0 }}>
+              Serving {AREAS.join(', ')}.
+            </p>
+            <p style={{ fontSize: '.78rem', margin: '.8rem 0 0' }}>Chelsea Sawyer, owner</p>
             <a href={telHref} style={{ marginTop: '.4rem' }}>{phone}</a>
             <a href={`mailto:${email}`}>{email}</a>
           </div>

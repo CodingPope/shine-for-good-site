@@ -54,8 +54,8 @@ export function BeforeAfterSlider({ beforeSrc, afterSrc, beforeAlt = 'Before', a
       className="ba"
       style={{ '--sp': `${pos}%` } as React.CSSProperties}
     >
-      <div className="ba-img ba-before" style={{ backgroundImage: `url(${beforeSrc})` }} />
-      <div className="ba-img ba-after" style={{ backgroundImage: `url(${afterSrc})` }} />
+      <div className="ba-img ba-before" role="img" aria-label={beforeAlt} style={{ backgroundImage: `url(${beforeSrc})` }} />
+      <div className="ba-img ba-after" role="img" aria-label={afterAlt} style={{ backgroundImage: `url(${afterSrc})` }} />
       <span className="ba-tag ba-tag--b">Before</span>
       <span className="ba-tag ba-tag--a">After</span>
       <div className="ba-handle"><div className="ba-knob"><i /><i /></div></div>

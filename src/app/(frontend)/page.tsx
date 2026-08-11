@@ -87,16 +87,11 @@ export default function HomePage() {
       </section>
 
       {/* Quote estimator */}
-      <section className="sec">
-        <div className="wrap">
-          <div className="sec-head rv">
-            <p className="eyebrow">Get a price</p>
-            <h2>See what your clean<br />would cost.</h2>
-            <p className="lede">Move a few dials and get a real range in under a minute. No email required.</p>
-          </div>
-        </div>
-      </section>
-      <PricingEstimator />
+      <PricingEstimator
+        eyebrow="Get a price"
+        heading={<>See what your clean<br />would cost.</>}
+        lede="Move a few dials and get a real range in under a minute. No email required."
+      />
 
       <section className="sec sec--tint">
         <div className="wrap cta-band rv">

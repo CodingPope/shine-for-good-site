@@ -22,8 +22,6 @@ const nextConfig: NextConfig = {
       permanent: true,
     }))
   },
-  typescript: { ignoreBuildErrors: true },
-  eslint: { ignoreDuringBuilds: true },
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
