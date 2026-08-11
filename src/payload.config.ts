@@ -10,6 +10,7 @@ import { Media } from './collections/Media'
 import { JournalPosts } from './collections/JournalPosts'
 import { BeforeAfter } from './collections/BeforeAfter'
 import { WorkGallery } from './collections/WorkGallery'
+import { Events } from './collections/Events'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -19,6 +20,9 @@ export default buildConfig({
     user: Users.slug,
     meta: {
       titleSuffix: '— Shine for Good',
+    },
+    components: {
+      beforeDashboard: ['@/components/AdminDashboardStats#AdminDashboardStats'],
     },
     livePreview: {
       collections: ['journal-posts'],
@@ -35,7 +39,7 @@ export default buildConfig({
       },
     },
   },
-  collections: [Users, Media, JournalPosts, BeforeAfter, WorkGallery],
+  collections: [Users, Media, JournalPosts, BeforeAfter, WorkGallery, Events],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

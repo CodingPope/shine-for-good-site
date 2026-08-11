@@ -1,6 +1,7 @@
 'use client'
 import { useMemo, useState } from 'react'
 import { showToast } from '@/lib/toast'
+import { track } from '@/lib/track'
 
 const CFG = {
   rate: 0.11, min: 125, bathExtra: 25, bedExtra: 18,
@@ -132,12 +133,14 @@ export function PricingEstimator({ eyebrow, heading, lede }: PricingEstimatorPro
 
   const sendSms = () => {
     if (!qName.trim() || !qPhone.trim()) { showToast('Add your name and phone so Chelsea can reply.'); return }
+    track('quote-sms')
     window.location.href = `sms:${PHONE_DIGITS}?&body=${encodeURIComponent(summary())}`
     showToast('Opening your messages app with the details filled in.')
   }
 
   const sendEmail = () => {
     if (!qName.trim()) { showToast('Add your name first.'); return }
+    track('quote-email')
     window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent('Quote request: ' + result.forLine)}&body=${encodeURIComponent(summary())}`
     showToast('Opening your email with the details filled in.')
   }

@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { showToast } from '@/lib/toast'
+import { track } from '@/lib/track'
 
 const AREAS = [
   'St. Petersburg', 'Tampa', 'Clearwater', 'Gulfport', 'St. Pete Beach',
@@ -33,6 +34,7 @@ export function ContactSection({
       `Name: ${name}`, `Phone: ${phone}`, `Email: ${email || '-'}`,
       `Looking for: ${what || '-'}`, '', msg,
     ].join('\n')
+    track('contact-form')
     window.location.href = `sms:${PHONE_DIGITS}?&body=${encodeURIComponent(body)}`
     showToast('Opening your messages app so you can hit send.')
   }

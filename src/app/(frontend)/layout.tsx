@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { ScrollReveal } from '@/components/ScrollReveal'
+import { ClickTracking } from '@/components/ClickTracking'
 import '../globals.css'
 
 export const metadata: Metadata = {
@@ -33,6 +34,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
       </head>
       <body>
         <ScrollReveal />
+        <ClickTracking />
         <a className="skip" href="#main">Skip to content</a>
         <div className="grain" aria-hidden="true" />
         <Nav />
