@@ -4,6 +4,7 @@ import config from '@payload-config'
 import Link from 'next/link'
 import Image from 'next/image'
 import { BeforeAfterSlider } from '@/components/BeforeAfterSlider'
+import { RefreshRouteOnSave } from '@/components/RefreshRouteOnSave'
 import type { BeforeAfter, Media, WorkGallery } from '@/payload-types'
 
 export const metadata: Metadata = {
@@ -41,6 +42,7 @@ export default async function WorkPage() {
 
   return (
     <>
+      <RefreshRouteOnSave />
       <header className="page-hero">
         <div className="wash wash--a" aria-hidden="true" />
         <div className="wash wash--b" aria-hidden="true" />

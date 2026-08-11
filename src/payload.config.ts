@@ -25,7 +25,7 @@ export default buildConfig({
       beforeDashboard: ['@/components/AdminDashboardStats#AdminDashboardStats'],
     },
     livePreview: {
-      collections: ['journal-posts'],
+      collections: ['journal-posts', 'before-after', 'work-gallery'],
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
         { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
@@ -34,6 +34,9 @@ export default buildConfig({
         const serverURL = process.env.NEXT_PUBLIC_SERVER_URL || ''
         if (collectionConfig?.slug === 'journal-posts' && data?.slug) {
           return `${serverURL}/next/preview?path=${encodeURIComponent(`/journal/${data.slug}`)}`
+        }
+        if (collectionConfig?.slug === 'before-after' || collectionConfig?.slug === 'work-gallery') {
+          return `${serverURL}/work`
         }
         return serverURL
       },
