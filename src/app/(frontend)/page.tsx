@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { PricingEstimator } from '@/components/PricingEstimator'
 
 export const metadata: Metadata = {
   title: 'Shine for Good | St. Pete & Tampa Bay Cleaning',
@@ -50,10 +51,10 @@ export default function HomePage() {
           </div>
           <div className="cards">
             {[
-              { href: '/residential-cleaning', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled.', price: 'From $110' },
-              { href: '/deep-cleaning', title: 'Deep Cleaning', desc: 'Everything in a standard clean, then the parts that get skipped for months.', price: 'From $180' },
+              { href: '/residential-cleaning', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled.', price: 'From $125' },
+              { href: '/deep-cleaning', title: 'Deep Cleaning', desc: 'Everything in a standard clean, then the parts that get skipped for months.', price: 'From $205' },
               { href: '/home-organization', title: 'Home Organization', desc: 'Pantry, closet, garage, playroom. A system you can actually keep.', price: '$60 / hour' },
-              { href: '/move-in-move-out', title: 'Move-In / Move-Out', desc: 'For the day the house is empty and every mark is visible.', price: 'From $225' },
+              { href: '/move-in-move-out', title: 'Move-In / Move-Out', desc: 'For the day the house is empty and every mark is visible.', price: 'From $200' },
               { href: '/small-business-cleaning', title: 'Small Businesses', desc: 'Offices, salons, studios and shops. Cleaned around your hours.', price: 'Custom quote' },
             ].map(s => (
               <Link key={s.href} className="card rv" href={s.href}>
@@ -84,6 +85,18 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Quote estimator */}
+      <section className="sec">
+        <div className="wrap">
+          <div className="sec-head rv">
+            <p className="eyebrow">Get a price</p>
+            <h2>See what your clean<br />would cost.</h2>
+            <p className="lede">Move a few dials and get a real range in under a minute. No email required.</p>
+          </div>
+        </div>
+      </section>
+      <PricingEstimator />
 
       <section className="sec sec--tint">
         <div className="wrap cta-band rv">

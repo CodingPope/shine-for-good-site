@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 }
 
 const FAQS: AccordionItem[] = [
-  { question: 'How much does house cleaning cost in St. Pete and Tampa?', answer: 'A standard clean starts from $110 for a small studio. A deep clean starts from $180. Square footage, bathroom count and the current condition of the home move the number. Fill out the quote builder and Chelsea will reach out with a custom price.' },
+  { question: 'How much does house cleaning cost in St. Pete and Tampa?', answer: 'A standard clean starts from $125 for a small studio. A deep clean starts from $205. Square footage, bathroom count and the current condition of the home move the number. Fill out the quote builder and Chelsea will reach out with a custom price.' },
   { question: 'How do I pay?', answer: 'Venmo, Zelle or cash, due on the day of service.' },
   { question: 'How far ahead do I need to book?', answer: 'One to two weeks is typical for a first deep clean. Recurring visits get a standing day and time so you never have to think about it again. Move-out cleans can sometimes be fit in within a few days, so it is always worth asking.' },
   { question: 'What if something is not right?', answer: 'Send a text within 24 hours and that area gets re-cleaned at no charge. No forms, no argument, no awkward conversation.' },

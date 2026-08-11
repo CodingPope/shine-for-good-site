@@ -3,7 +3,7 @@ import { ServiceDetailPage } from '@/components/ServiceDetailPage'
 
 export const metadata: Metadata = {
   title: 'Residential House Cleaning in St. Pete & Tampa',
-  description: 'Recurring house cleaning in St. Petersburg and Tampa. Every room, every visit, same person each time. From $110. 10% of every service supports adults with disabilities.',
+  description: 'Recurring house cleaning in St. Petersburg and Tampa. Every room, every visit, same person each time. From $125. 10% of every service supports adults with disabilities.',
 }
 
 export default function ResidentialCleaningPage() {
@@ -13,7 +13,7 @@ export default function ResidentialCleaningPage() {
       eyebrow="Most popular as a recurring visit"
       title="Residential cleaning in St. Pete and Tampa"
       lede="The regular reset. Every room touched, every surface handled, the house put back the way you like it."
-      price="From $110"
+      price="From $125"
       priceSub="Final price depends on your space and what it needs. Fill out the form and Chelsea will get back to you with a custom quote."
       priceCtaHref="/pricing"
       priceCtaLabel="Request a quote"
@@ -34,7 +34,7 @@ export default function ResidentialCleaningPage() {
         { question: 'Do I keep the same cleaner?', answer: 'Always. Chelsea cleans every home personally, which is why the schedule is limited.' },
       ]}
       related={[
-        { href: '/deep-cleaning', icon: 'deep', title: 'Deep Cleaning', desc: 'Everything in a standard clean, then the parts that get skipped for months. This is the one that resets a house.', price: 'From $180' },
+        { href: '/deep-cleaning', icon: 'deep', title: 'Deep Cleaning', desc: 'Everything in a standard clean, then the parts that get skipped for months. This is the one that resets a house.', price: 'From $205' },
         { href: '/home-organization', icon: 'organize', title: 'Home Organization', desc: 'Pantry, closet, garage, playroom. We sort, we purge, we give everything a home you will still be using in six months.', price: '$60 / hour' },
       ]}
     />

@@ -34,8 +34,8 @@ export default function HomeOrganizationPage() {
         { question: 'What happens to donations?', answer: 'Bagged, loaded, and dropped off locally. You get the receipt.' },
       ]}
       related={[
-        { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: 'From $110' },
-        { href: '/move-in-move-out', icon: 'move', title: 'Move-In / Move-Out', desc: 'For the day the house is empty and every mark is visible. Landlords, buyers and inspectors all look at the same places, and so do we.', price: 'From $225' },
+        { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: 'From $125' },
+        { href: '/move-in-move-out', icon: 'move', title: 'Move-In / Move-Out', desc: 'For the day the house is empty and every mark is visible. Landlords, buyers and inspectors all look at the same places, and so do we.', price: 'From $200' },
       ]}
     />
   )

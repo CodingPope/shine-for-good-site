@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import { showToast } from '@/lib/toast'
 
 const CFG = {
-  rate: 0.11, min: 110, bathExtra: 25, bedExtra: 18,
+  rate: 0.11, min: 125, bathExtra: 25, bedExtra: 18,
   deepMult: 1.64, moveMult: 1.60, bizMult: 1.05, orgRate: 60,
   wk: 20, bi: 15, mo: 10, spread: 10, give: 10,
 }

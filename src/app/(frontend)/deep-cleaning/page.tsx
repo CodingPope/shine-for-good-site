@@ -3,7 +3,7 @@ import { ServiceDetailPage } from '@/components/ServiceDetailPage'
 
 export const metadata: Metadata = {
   title: 'Deep Cleaning Service in St. Pete & Tampa',
-  description: 'Deep house cleaning in St. Petersburg and Tampa. Baseboards, grout, blinds, inside appliances, behind furniture. From $180. Recommended for a first visit.',
+  description: 'Deep house cleaning in St. Petersburg and Tampa. Baseboards, grout, blinds, inside appliances, behind furniture. From $205. Recommended for a first visit.',
 }
 
 export default function DeepCleaningPage() {
@@ -13,7 +13,7 @@ export default function DeepCleaningPage() {
       eyebrow="Recommended for a first visit"
       title="Deep cleaning that actually resets a house"
       lede="Everything in a standard clean, then the parts that get skipped for months. This is the one that resets a house."
-      price="From $180"
+      price="From $205"
       priceSub="Final price depends on your space and what it needs. Fill out the form and Chelsea will get back to you with a custom quote."
       priceCtaHref="/pricing"
       priceCtaLabel="Request a quote"
@@ -34,8 +34,8 @@ export default function DeepCleaningPage() {
         { question: 'Does it include inside the oven and fridge?', answer: 'Those are add-ons rather than standard, because plenty of people do not want them touched. Both are $35 in the estimate builder.' },
       ]}
       related={[
-        { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: 'From $110' },
-        { href: '/move-in-move-out', icon: 'move', title: 'Move-In / Move-Out', desc: 'For the day the house is empty and every mark is visible. Landlords, buyers and inspectors all look at the same places, and so do we.', price: 'From $225' },
+        { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: 'From $125' },
+        { href: '/move-in-move-out', icon: 'move', title: 'Move-In / Move-Out', desc: 'For the day the house is empty and every mark is visible. Landlords, buyers and inspectors all look at the same places, and so do we.', price: 'From $200' },
       ]}
     />
   )

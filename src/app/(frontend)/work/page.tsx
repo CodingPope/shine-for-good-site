@@ -4,6 +4,7 @@ import config from '@payload-config'
 import Link from 'next/link'
 import Image from 'next/image'
 import { BeforeAfterSlider } from '@/components/BeforeAfterSlider'
+import type { Media } from '@/payload-types'
 
 export const metadata: Metadata = {
   title: 'Our Work',
@@ -80,22 +81,29 @@ export default async function WorkPage() {
             </div>
           )}
 
-          {/* Additional before/afters */}
+          {/* Additional before/afters — each its own draggable comparison, not a flat photo */}
           {baItems.length > 1 && (
-            <div className="rv rv-d2" style={{ marginTop: 'clamp(1.6rem,3vw,2.4rem)' }}>
-              <div className="gal">
-                {baItems.slice(1).map(item => {
-                  const bef = item.beforeImage as Media | null
-                  const aft = item.afterImage as Media | null
-                  if (!bef?.url || !aft?.url) return null
-                  return (
-                    <div key={item.id} className="gal-item">
-                      <Image src={aft.url} alt={aft.alt || item.title} width={400} height={300} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      {item.caption && <span className="gal-cap">{item.caption}{item.location ? `, ${item.location}` : ''}</span>}
-                    </div>
-                  )
-                })}
-              </div>
+            <div className="rv rv-d2 ba-grid" style={{ marginTop: 'clamp(1.6rem,3vw,2.4rem)' }}>
+              {baItems.slice(1).map(item => {
+                const bef = item.beforeImage as Media | null
+                const aft = item.afterImage as Media | null
+                if (!bef?.url || !aft?.url) return null
+                return (
+                  <div key={item.id} className="ba-grid-item">
+                    <BeforeAfterSlider
+                      beforeSrc={bef.url}
+                      afterSrc={aft.url}
+                      beforeAlt={bef.alt || 'Before'}
+                      afterAlt={aft.alt || 'After'}
+                    />
+                    {item.caption && (
+                      <p style={{ textAlign: 'center', marginTop: '.7rem', opacity: .7, fontSize: '.85rem' }}>
+                        {item.caption}{item.location ? ` — ${item.location}` : ''}
+                      </p>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           )}
 
