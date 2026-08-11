@@ -3,16 +3,18 @@ import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { ScrollReveal } from '@/components/ScrollReveal'
 import { ClickTracking } from '@/components/ClickTracking'
+import { LocalBusinessSchema } from '@/components/LocalBusinessSchema'
+import { SITE_URL } from '@/lib/site'
 import '../globals.css'
 
 export const metadata: Metadata = {
   title: { default: 'Shine for Good | St. Pete & Tampa Bay Cleaning', template: '%s | Shine for Good' },
   description: 'Residential cleaning, deep cleaning, home organization, and more across St. Pete and Tampa Bay. Every clean gives back to the Marc House in Key West.',
-  metadataBase: new URL('https://shine-for-good.com'),
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     type: 'website',
     siteName: 'Shine for Good',
-    url: 'https://shine-for-good.com',
+    url: SITE_URL,
   },
   twitter: {
     card: 'summary_large_image',
@@ -33,6 +35,7 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
         />
       </head>
       <body>
+        <LocalBusinessSchema />
         <ScrollReveal />
         <ClickTracking />
         <a className="skip" href="#main">Skip to content</a>

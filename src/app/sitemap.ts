@@ -1,8 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-
-const BASE_URL = 'https://shine-for-good.com'
+import { SITE_URL as BASE_URL } from '@/lib/site'
 
 const STATIC_ROUTES: { path: string; priority: number; changeFrequency: 'monthly' | 'weekly' }[] = [
   { path: '/', priority: 1.0, changeFrequency: 'monthly' },

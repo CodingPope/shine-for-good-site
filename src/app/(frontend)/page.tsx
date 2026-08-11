@@ -1,12 +1,32 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 import { PricingEstimator } from '@/components/PricingEstimator'
+import type { Review } from '@/payload-types'
 
 export const metadata: Metadata = {
   title: 'Shine for Good | St. Pete & Tampa Bay Cleaning',
 }
 
-export default function HomePage() {
+export const revalidate = 60
+
+const FALLBACK_REVIEWS = [
+  { text: "Couldn’t recommend Shine for Good more. They’re incredibly thorough, trustworthy, and always leave my apartment feeling so fresh and cared for.", name: 'Emma I.', location: 'St. Petersburg' },
+  { text: 'Chelsea was on time, very thorough, all in all just did a great job. Very personable and reasonable for the amount of work that she did. Definitely would recommend!', name: 'Brad S.', location: 'St. Petersburg' },
+  { text: 'Chelsea is on time and very thorough. She brings a variety of cleaning products with her. She knows how to clean!', name: 'Sheila M.', location: 'St. Petersburg' },
+]
+
+export default async function HomePage() {
+  const payload = await getPayload({ config })
+  let reviews: (Review | (typeof FALLBACK_REVIEWS)[number])[] = FALLBACK_REVIEWS
+  try {
+    const result = await payload.find({ collection: 'reviews', sort: 'order', limit: 6 })
+    if (result.docs.length) reviews = result.docs
+  } catch {
+    // fall back to the defaults above
+  }
+
   return (
     <>
       <header className="hero">
@@ -72,14 +92,10 @@ export default function HomePage() {
         <div className="wrap">
           <div className="sec-head rv"><p className="eyebrow">In their words</p><h2>What clients say<br />after the first visit.</h2></div>
           <div className="quotes">
-            {[
-              { text: "Couldn\u2019t recommend Shine for Good more. They\u2019re incredibly thorough, trustworthy, and always leave my apartment feeling so fresh and cared for.", name: 'Emma I.', loc: 'St. Petersburg' },
-              { text: 'Chelsea was on time, very thorough, all in all just did a great job. Very personable and reasonable for the amount of work that she did. Definitely would recommend!', name: 'Brad S.', loc: 'St. Petersburg' },
-              { text: 'Chelsea is on time and very thorough. She brings a variety of cleaning products with her. She knows how to clean!', name: 'Sheila M.', loc: 'St. Petersburg' },
-            ].map((r, i) => (
+            {reviews.map((r, i) => (
               <figure key={i} className={`quote rv rv-d${i + 1}`} style={{ margin: 0 }}>
                 <p>&ldquo;{r.text}&rdquo;</p>
-                <cite>{r.name}<span>{r.loc}</span></cite>
+                <cite>{r.name}<span>{r.location}</span></cite>
               </figure>
             ))}
           </div>

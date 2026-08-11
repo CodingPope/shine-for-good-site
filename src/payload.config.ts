@@ -11,6 +11,8 @@ import { JournalPosts } from './collections/JournalPosts'
 import { BeforeAfter } from './collections/BeforeAfter'
 import { WorkGallery } from './collections/WorkGallery'
 import { Events } from './collections/Events'
+import { Reviews } from './collections/Reviews'
+import { SiteSettings } from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -26,11 +28,12 @@ export default buildConfig({
     },
     livePreview: {
       collections: ['journal-posts', 'before-after', 'work-gallery'],
+      globals: ['site-settings'],
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
         { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
       ],
-      url: ({ data, collectionConfig }) => {
+      url: ({ data, collectionConfig, globalConfig }) => {
         const serverURL = process.env.NEXT_PUBLIC_SERVER_URL || ''
         if (collectionConfig?.slug === 'journal-posts' && data?.slug) {
           return `${serverURL}/next/preview?path=${encodeURIComponent(`/journal/${data.slug}`)}`
@@ -38,11 +41,15 @@ export default buildConfig({
         if (collectionConfig?.slug === 'before-after' || collectionConfig?.slug === 'work-gallery') {
           return `${serverURL}/work`
         }
+        if (globalConfig?.slug === 'site-settings') {
+          return `${serverURL}/about`
+        }
         return serverURL
       },
     },
   },
-  collections: [Users, Media, JournalPosts, BeforeAfter, WorkGallery, Events],
+  collections: [Users, Media, JournalPosts, BeforeAfter, WorkGallery, Events, Reviews],
+  globals: [SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

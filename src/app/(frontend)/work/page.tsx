@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { BeforeAfterSlider } from '@/components/BeforeAfterSlider'
 import { RefreshRouteOnSave } from '@/components/RefreshRouteOnSave'
-import type { BeforeAfter, Media, WorkGallery } from '@/payload-types'
+import type { BeforeAfter, Media, Review, WorkGallery } from '@/payload-types'
 
 export const metadata: Metadata = {
   title: 'Our Work',
@@ -14,17 +14,26 @@ export const metadata: Metadata = {
 
 export const revalidate = 60
 
+const FALLBACK_REVIEWS = [
+  { text: "Couldn\u2019t recommend Shine for Good more. They\u2019re incredibly thorough, trustworthy, and always leave my apartment feeling so fresh and cared for.", name: 'Emma I.', location: 'St. Petersburg' },
+  { text: 'Chelsea was on time, very thorough, all in all just did a great job. Very personable and reasonable for the amount of work that she did. Definitely would recommend!', name: 'Brad S.', location: 'St. Petersburg' },
+  { text: 'Chelsea is on time and very thorough. She brings a variety of cleaning products with her. She knows how to clean!', name: 'Sheila M.', location: 'St. Petersburg' },
+]
+
 export default async function WorkPage() {
   let baItems: BeforeAfter[] = []
   let gallery: WorkGallery[] = []
+  let reviews: (Review | (typeof FALLBACK_REVIEWS)[number])[] = FALLBACK_REVIEWS
   try {
     const payload = await getPayload({ config })
-    const [baResult, galleryResult] = await Promise.all([
+    const [baResult, galleryResult, reviewsResult] = await Promise.all([
       payload.find({ collection: 'before-after', sort: 'order', limit: 20, depth: 1 }),
       payload.find({ collection: 'work-gallery', sort: 'order', limit: 12, depth: 1 }),
+      payload.find({ collection: 'reviews', sort: 'order', limit: 6 }),
     ])
     baItems = baResult.docs
     gallery = galleryResult.docs
+    if (reviewsResult.docs.length) reviews = reviewsResult.docs
   } catch {
     baItems = []
     gallery = []
@@ -33,12 +42,6 @@ export default async function WorkPage() {
   const featured = baItems.find(item => item.featured) || baItems[0] || null
   const featuredBefore = (featured?.beforeImage as Media) ?? null
   const featuredAfter = (featured?.afterImage as Media) ?? null
-
-  const reviews = [
-    { text: "Couldn\u2019t recommend Shine for Good more. They\u2019re incredibly thorough, trustworthy, and always leave my apartment feeling so fresh and cared for.", name: 'Emma I.', location: 'St. Petersburg' },
-    { text: 'Chelsea was on time, very thorough, all in all just did a great job. Very personable and reasonable for the amount of work that she did. Definitely would recommend!', name: 'Brad S.', location: 'St. Petersburg' },
-    { text: 'Chelsea is on time and very thorough. She brings a variety of cleaning products with her. She knows how to clean!', name: 'Sheila M.', location: 'St. Petersburg' },
-  ]
 
   return (
     <>

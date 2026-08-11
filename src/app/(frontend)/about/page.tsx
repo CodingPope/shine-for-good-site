@@ -1,18 +1,39 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
+import { getPayload } from 'payload'
+import config from '@payload-config'
+import type { Media, Review } from '@/payload-types'
 
 export const metadata: Metadata = {
   title: 'About Chelsea Sawyer',
   description: 'Chelsea Sawyer cleans every Shine for Good home personally across St. Petersburg and Tampa, on a deliberately limited schedule.',
 }
 
-const REVIEWS = [
+export const revalidate = 60
+
+const FALLBACK_REVIEWS = [
   { text: "Couldn’t recommend Shine for Good more. They’re incredibly thorough, trustworthy, and always leave my apartment feeling so fresh and cared for.", name: 'Emma I.', location: 'St. Petersburg' },
   { text: 'Chelsea was on time, very thorough, all in all just did a great job. Very personable and reasonable for the amount of work that she did. Definitely would recommend!', name: 'Brad S.', location: 'St. Petersburg' },
   { text: 'Chelsea is on time and very thorough. She brings a variety of cleaning products with her. She knows how to clean!', name: 'Sheila M.', location: 'St. Petersburg' },
 ]
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const payload = await getPayload({ config })
+
+  let photo: Media | null = null
+  let reviews: (Review | (typeof FALLBACK_REVIEWS)[number])[] = FALLBACK_REVIEWS
+  try {
+    const [settings, reviewsResult] = await Promise.all([
+      payload.findGlobal({ slug: 'site-settings' }),
+      payload.find({ collection: 'reviews', sort: 'order', limit: 6 }),
+    ])
+    photo = (settings.aboutPhoto as Media) ?? null
+    if (reviewsResult.docs.length) reviews = reviewsResult.docs
+  } catch {
+    // fall back to the defaults above
+  }
+
   return (
     <>
       <header className="page-hero">
@@ -35,10 +56,16 @@ export default function AboutPage() {
       <section className="sec">
         <div className="wrap about">
           <div className="about-photo rv">
-            <div className="ph" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" /></svg>
-            </div>
-            <span className="ph-hint">Portrait of Chelsea</span>
+            {photo?.url ? (
+              <Image src={photo.url} alt={photo.alt || 'Chelsea Sawyer'} fill style={{ objectFit: 'cover' }} />
+            ) : (
+              <>
+                <div className="ph" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" /></svg>
+                </div>
+                <span className="ph-hint">Portrait of Chelsea</span>
+              </>
+            )}
           </div>
           <div className="rv rv-d2">
             <p className="lede">I started Shine for Good because I wanted the work I do every day to be worth something past the invoice. Cleaning is honest work. Done right, it gives someone back their weekend, their headspace, and the version of their home they actually pictured when they moved in.</p>
@@ -53,7 +80,7 @@ export default function AboutPage() {
         <div className="wrap">
           <div className="sec-head rv"><p className="eyebrow">In their words</p><h2>What clients say.</h2></div>
           <div className="quotes">
-            {REVIEWS.map((r, i) => (
+            {reviews.map((r, i) => (
               <figure key={i} className={`quote rv rv-d${i + 1}`} style={{ margin: 0 }}>
                 <p>&ldquo;{r.text}&rdquo;</p>
                 <cite>{r.name}<span>{r.location}</span></cite>
