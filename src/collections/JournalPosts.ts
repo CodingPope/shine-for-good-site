@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { slugify } from '../lib/slugify'
 
 export const JournalPosts: CollectionConfig = {
   slug: 'journal-posts',
@@ -29,7 +30,15 @@ export const JournalPosts: CollectionConfig = {
       unique: true,
       admin: {
         position: 'sidebar',
-        description: 'URL-friendly name, e.g. "deep-clean-tips". No spaces or special characters.',
+        description: 'The web address for this post. Spaces and punctuation are cleaned up automatically — leave blank to generate one from the title.',
+      },
+      hooks: {
+        beforeValidate: [
+          ({ value, siblingData }) => {
+            const source = (typeof value === 'string' && value.trim()) || siblingData?.title || ''
+            return slugify(source)
+          },
+        ],
       },
     },
     {
