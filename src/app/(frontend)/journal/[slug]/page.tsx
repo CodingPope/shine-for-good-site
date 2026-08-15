@@ -104,6 +104,7 @@ export default async function JournalPostPage({ params }: { params: Promise<{ sl
             {publishedDate && <p className="lede" style={{ fontSize: '.9rem', opacity: .7 }}>{publishedDate}</p>}
           </div>
         </div>
+        <div className="scroll-cue" aria-hidden="true"><span>Scroll</span><i /></div>
       </header>
 
       <section className="sec">

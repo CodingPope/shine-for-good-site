@@ -52,6 +52,7 @@ export async function ServiceDetailPage({
             <p className="lede">{lede}</p>
           </div>
         </div>
+        <div className="scroll-cue" aria-hidden="true"><span>Scroll</span><i /></div>
       </header>
 
       <section className="sec">

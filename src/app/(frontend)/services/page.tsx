@@ -37,6 +37,7 @@ export default async function ServicesPage() {
             <p className="lede">Seven services, each described in full. If you are not sure which one you need, fill out the quote builder and Chelsea will match you up.</p>
           </div>
         </div>
+        <div className="scroll-cue" aria-hidden="true"><span>Scroll</span><i /></div>
       </header>
 
       <section className="sec">

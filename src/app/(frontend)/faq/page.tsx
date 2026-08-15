@@ -60,6 +60,7 @@ export default async function FaqPage() {
             <p className="lede">If the answer you need is not here, text and ask. Chelsea answers these herself.</p>
           </div>
         </div>
+        <div className="scroll-cue" aria-hidden="true"><span>Scroll</span><i /></div>
       </header>
 
       <section className="sec">

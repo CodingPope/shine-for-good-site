@@ -51,6 +51,7 @@ export default async function GivingBackPage() {
             <p className="lede">Every clean includes a giving-back commitment. Here is the organization we support and why it matters to us.</p>
           </div>
         </div>
+        <div className="scroll-cue" aria-hidden="true"><span>Scroll</span><i /></div>
       </header>
 
       <section className="sec">

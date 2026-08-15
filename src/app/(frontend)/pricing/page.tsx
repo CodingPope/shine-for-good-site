@@ -54,6 +54,7 @@ export default async function PricingPage() {
             <p className="lede">Tell us about your space, pick your add-ons, and send your details to Chelsea for a custom quote. She will reach out directly.</p>
           </div>
         </div>
+        <div className="scroll-cue" aria-hidden="true"><span>Scroll</span><i /></div>
       </header>
 
       <PricingEstimator phone={phone} email={email} />

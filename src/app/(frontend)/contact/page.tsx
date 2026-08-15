@@ -27,6 +27,7 @@ export default async function ContactPage() {
             <p className="lede">Texting is fastest and usually gets an answer the same day. If you would rather talk it through, say so and Chelsea will call you back at a time that works.</p>
           </div>
         </div>
+        <div className="scroll-cue" aria-hidden="true"><span>Scroll</span><i /></div>
       </header>
 
       <ContactSection businessPhone={phone} areas={areas} />

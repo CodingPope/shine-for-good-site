@@ -14,6 +14,22 @@ export function ScrollReveal() {
       return
     }
 
+    // Reveal anything already in the viewport immediately on load, rather
+    // than waiting on IntersectionObserver's async initial callback — that
+    // callback can lag behind hydration enough that above-the-fold content
+    // sits invisible until the user scrolls, making the page look empty.
+    const vh = window.innerHeight
+    const toObserve: HTMLElement[] = []
+    for (const el of items) {
+      const r = el.getBoundingClientRect()
+      if (r.top < vh && r.bottom > 0) {
+        el.classList.add('is-in')
+      } else {
+        toObserve.push(el)
+      }
+    }
+    if (!toObserve.length) return
+
     const io = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -23,7 +39,7 @@ export function ScrollReveal() {
       })
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 })
 
-    items.forEach(e => io.observe(e))
+    toObserve.forEach(e => io.observe(e))
     return () => io.disconnect()
   }, [pathname])
 

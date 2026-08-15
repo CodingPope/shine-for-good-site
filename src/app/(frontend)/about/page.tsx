@@ -53,6 +53,7 @@ export default async function AboutPage() {
             <p className="lede">One person, a limited schedule, and a standard that does not move depending on how the day is going.</p>
           </div>
         </div>
+        <div className="scroll-cue" aria-hidden="true"><span>Scroll</span><i /></div>
       </header>
 
       <section className="sec">

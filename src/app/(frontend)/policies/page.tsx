@@ -77,6 +77,7 @@ export default async function PoliciesPage() {
             <p className="lede">The practical details on scheduling, payment, cancellations, and everything in between. Questions on anything here? Just ask.</p>
           </div>
         </div>
+        <div className="scroll-cue" aria-hidden="true"><span>Scroll</span><i /></div>
       </header>
 
       <section className="sec">

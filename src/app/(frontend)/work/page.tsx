@@ -63,6 +63,7 @@ export default async function WorkPage() {
             <p className="lede">Real homes, real cleans. Drag the slider to compare.</p>
           </div>
         </div>
+        <div className="scroll-cue" aria-hidden="true"><span>Scroll</span><i /></div>
       </header>
 
       {/* Hero before/after slider */}

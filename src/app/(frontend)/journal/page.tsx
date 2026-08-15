@@ -45,6 +45,7 @@ export default async function JournalPage() {
             <p className="lede">Cleaning tips, home organization ideas, and stories from behind the scenes.</p>
           </div>
         </div>
+        <div className="scroll-cue" aria-hidden="true"><span>Scroll</span><i /></div>
       </header>
 
       <section className="sec">
