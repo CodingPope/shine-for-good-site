@@ -22,6 +22,7 @@ export const Events: CollectionConfig = {
       type: 'select',
       required: true,
       options: [
+        { label: 'Page view', value: 'page-view' },
         { label: 'Quote request — text', value: 'quote-sms' },
         { label: 'Quote request — email', value: 'quote-email' },
         { label: 'Contact form sent', value: 'contact-form' },

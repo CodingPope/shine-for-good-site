@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { showToast } from '@/lib/toast'
 import { track } from '@/lib/track'
+import { submitLead } from '@/lib/submitLead'
 
 const DEFAULT_AREAS = [
   'St. Petersburg', 'Tampa', 'Clearwater', 'Gulfport', 'St. Pete Beach',
@@ -38,6 +39,11 @@ export function ContactSection({
       `Looking for: ${what || '-'}`, '', msg,
     ].join('\n')
     track('contact-form')
+    submitLead({
+      name, phone, email: email || undefined,
+      source: 'contact-form',
+      summary: [what && `Looking for: ${what}`, msg].filter(Boolean).join('\n'),
+    })
     window.location.href = `sms:${businessPhoneDigits}?&body=${encodeURIComponent(body)}`
     showToast('Opening your messages app so you can hit send.')
   }

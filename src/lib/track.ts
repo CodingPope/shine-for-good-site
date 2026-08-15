@@ -1,4 +1,4 @@
-export type TrackEventType = 'quote-sms' | 'quote-email' | 'contact-form' | 'call-click'
+export type TrackEventType = 'page-view' | 'quote-sms' | 'quote-email' | 'contact-form' | 'call-click'
 
 export function track(type: TrackEventType) {
   try {

@@ -2,6 +2,7 @@
 import { useMemo, useState } from 'react'
 import { showToast } from '@/lib/toast'
 import { track } from '@/lib/track'
+import { submitLead } from '@/lib/submitLead'
 
 const CFG = {
   rate: 0.11, min: 125, bathExtra: 25, bedExtra: 18,
@@ -73,6 +74,7 @@ export function PricingEstimator({
   const [addons, setAddons] = useState<string[]>([])
   const [qName, setQName] = useState('')
   const [qPhone, setQPhone] = useState('')
+  const [qEmail, setQEmail] = useState('')
   const [qAddr, setQAddr] = useState('')
   const [qNote, setQNote] = useState('')
 
@@ -124,7 +126,8 @@ export function PricingEstimator({
       'Quote request from the Shine for Good site', '',
       `Name: ${qName || '-'}`,
       `Phone: ${qPhone || '-'}`,
-      `Where: ${qAddr || '-'}`, '',
+      `Where: ${qAddr || '-'}`,
+      ...(qEmail ? [`Email: ${qEmail}`] : []), '',
       `Service: ${result.forLine}`,
       `Size: ${sqft.toLocaleString('en-US')} sq ft, ${bed} bd / ${bath} ba`,
       `Add-ons: ${names.length ? names.join(', ') : 'none'}`,
@@ -137,6 +140,11 @@ export function PricingEstimator({
   const sendSms = () => {
     if (!qName.trim() || !qPhone.trim()) { showToast('Add your name and phone so Chelsea can reply.'); return }
     track('quote-sms')
+    submitLead({
+      name: qName, phone: qPhone, email: qEmail || undefined,
+      source: 'quote-estimator', summary: summary(),
+      estimateRange: `${money(result.lo)} to ${money(result.hi)}`,
+    })
     window.location.href = `sms:${phoneDigits}?&body=${encodeURIComponent(summary())}`
     showToast('Opening your messages app with the details filled in.')
   }
@@ -144,6 +152,11 @@ export function PricingEstimator({
   const sendEmail = () => {
     if (!qName.trim()) { showToast('Add your name first.'); return }
     track('quote-email')
+    submitLead({
+      name: qName, phone: qPhone, email: qEmail || undefined,
+      source: 'quote-estimator', summary: summary(),
+      estimateRange: `${money(result.lo)} to ${money(result.hi)}`,
+    })
     window.location.href = `mailto:${email}?subject=${encodeURIComponent('Quote request: ' + result.forLine)}&body=${encodeURIComponent(summary())}`
     showToast('Opening your email with the details filled in.')
   }
@@ -278,13 +291,14 @@ export function PricingEstimator({
               <div className="send is-on">
                 <input className="inp" type="text" placeholder="Your name" autoComplete="name" value={qName} onChange={e => setQName(e.target.value)} />
                 <input className="inp" type="tel" placeholder="Phone number" autoComplete="tel" value={qPhone} onChange={e => setQPhone(e.target.value)} />
+                <input className="inp" type="email" placeholder="Email (optional)" autoComplete="email" value={qEmail} onChange={e => setQEmail(e.target.value)} />
                 <input className="inp" type="text" placeholder="Neighborhood or address" autoComplete="street-address" value={qAddr} onChange={e => setQAddr(e.target.value)} />
                 <textarea className="inp" placeholder="Anything Chelsea should know? Pets, problem areas, timing." value={qNote} onChange={e => setQNote(e.target.value)} />
                 <div className="res-actions">
                   <button className="btn btn--gold" type="button" onClick={sendSms}>Text it over</button>
                   <button className="btn btn--ghost" type="button" onClick={sendEmail}>Email it instead</button>
                 </div>
-                <p className="res-fine">Your details go straight to Chelsea&apos;s phone. No mailing list, no automated follow-up sequence.</p>
+                <p className="res-fine">Your details go straight to Chelsea&apos;s phone. No mailing list, no spam.</p>
               </div>
               <a className="btn btn--ghost" href={`tel:${phoneDigits}`} style={{ marginTop: '.8rem', display: 'block', textAlign: 'center' }}>Rather just talk? Call</a>
             </div>

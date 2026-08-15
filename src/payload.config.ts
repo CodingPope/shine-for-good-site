@@ -1,5 +1,6 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+import { resendAdapter } from '@payloadcms/email-resend'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -11,6 +12,7 @@ import { JournalPosts } from './collections/JournalPosts'
 import { BeforeAfter } from './collections/BeforeAfter'
 import { WorkGallery } from './collections/WorkGallery'
 import { Events } from './collections/Events'
+import { Leads } from './collections/Leads'
 import { Reviews } from './collections/Reviews'
 import { FAQs } from './collections/FAQs'
 import { Policies } from './collections/Policies'
@@ -54,10 +56,17 @@ export default buildConfig({
       },
     },
   },
-  collections: [Users, Media, JournalPosts, BeforeAfter, WorkGallery, Events, Reviews, FAQs, Policies],
+  collections: [Leads, Users, Media, JournalPosts, BeforeAfter, WorkGallery, Events, Reviews, FAQs, Policies],
   globals: [SiteSettings, GivingBack],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
+  email: process.env.RESEND_API_KEY
+    ? resendAdapter({
+        apiKey: process.env.RESEND_API_KEY,
+        defaultFromAddress: process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
+        defaultFromName: process.env.RESEND_FROM_NAME || 'Shine for Good',
+      })
+    : undefined,
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

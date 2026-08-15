@@ -3,6 +3,7 @@ import { Nav } from '@/components/Nav'
 import { Footer } from '@/components/Footer'
 import { ScrollReveal } from '@/components/ScrollReveal'
 import { ClickTracking } from '@/components/ClickTracking'
+import { PageViewTracking } from '@/components/PageViewTracking'
 import { LocalBusinessSchema } from '@/components/LocalBusinessSchema'
 import { SITE_URL } from '@/lib/site'
 import { getSiteSettings } from '@/lib/getSiteSettings'
@@ -41,6 +42,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
         <LocalBusinessSchema />
         <ScrollReveal />
         <ClickTracking />
+        <PageViewTracking />
         <a className="skip" href="#main">Skip to content</a>
         <div className="grain" aria-hidden="true" />
         <Nav phone={phone} />
