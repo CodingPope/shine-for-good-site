@@ -1,22 +1,42 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 import { PricingEstimator } from '@/components/PricingEstimator'
 import { FaqAccordion, type AccordionItem } from '@/components/Accordion'
 import { ContactSection } from '@/components/ContactSection'
+import { getSiteSettings } from '@/lib/getSiteSettings'
 
 export const metadata: Metadata = {
   title: 'Cleaning Prices in St. Pete & Tampa | Instant Estimate',
   description: 'See what house cleaning costs in St. Petersburg and Tampa. Move five dials and get a real price range in under a minute. No email required.',
 }
 
-const FAQS: AccordionItem[] = [
+export const revalidate = 60
+
+const FALLBACK_FAQS: AccordionItem[] = [
   { question: 'How much does house cleaning cost in St. Pete and Tampa?', answer: 'A standard clean starts from $125 for a small studio. A deep clean starts from $205. Square footage, bathroom count and the current condition of the home move the number. Fill out the quote builder and Chelsea will reach out with a custom price.' },
   { question: 'How do I pay?', answer: 'Venmo, Zelle or cash, due on the day of service.' },
   { question: 'How far ahead do I need to book?', answer: 'One to two weeks is typical for a first deep clean. Recurring visits get a standing day and time so you never have to think about it again. Move-out cleans can sometimes be fit in within a few days, so it is always worth asking.' },
   { question: 'What if something is not right?', answer: 'Send a text within 24 hours and that area gets re-cleaned at no charge. No forms, no argument, no awkward conversation.' },
 ]
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  const { phone, email, areas } = await getSiteSettings()
+  let faqs: AccordionItem[] = FALLBACK_FAQS
+  try {
+    const payload = await getPayload({ config })
+    const result = await payload.find({
+      collection: 'faqs',
+      where: { showOnPricingPage: { equals: true } },
+      sort: 'order',
+      limit: 20,
+    })
+    if (result.docs.length) faqs = result.docs.map(f => ({ question: f.question, answer: f.answer }))
+  } catch {
+    // fall back to the defaults above
+  }
+
   return (
     <>
       <header className="page-hero">
@@ -36,7 +56,7 @@ export default function PricingPage() {
         </div>
       </header>
 
-      <PricingEstimator />
+      <PricingEstimator phone={phone} email={email} />
 
       <section className="sec sec--tint">
         <div className="wrap">
@@ -58,11 +78,11 @@ export default function PricingPage() {
       <section className="sec">
         <div className="wrap">
           <div className="sec-head rv"><p className="eyebrow">Questions</p><h2>About pricing<br />and booking.</h2></div>
-          <div className="rv"><FaqAccordion items={FAQS} /></div>
+          <div className="rv"><FaqAccordion items={faqs} /></div>
         </div>
       </section>
 
-      <ContactSection showEstimateLink={false} />
+      <ContactSection showEstimateLink={false} businessPhone={phone} areas={areas} />
     </>
   )
 }

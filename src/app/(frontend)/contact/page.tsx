@@ -1,13 +1,15 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ContactSection } from '@/components/ContactSection'
+import { getSiteSettings } from '@/lib/getSiteSettings'
 
 export const metadata: Metadata = {
   title: 'Contact Chelsea',
   description: 'Call or text 305-304-9579 to book house cleaning in St. Petersburg or Tampa. Same day replies most days.',
 }
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const { phone, areas } = await getSiteSettings()
   return (
     <>
       <header className="page-hero">
@@ -27,7 +29,7 @@ export default function ContactPage() {
         </div>
       </header>
 
-      <ContactSection />
+      <ContactSection businessPhone={phone} areas={areas} />
 
       <section className="sec sec--tint">
         <div className="wrap">

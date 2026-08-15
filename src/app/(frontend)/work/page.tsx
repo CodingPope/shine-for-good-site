@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { BeforeAfterSlider } from '@/components/BeforeAfterSlider'
 import { RefreshRouteOnSave } from '@/components/RefreshRouteOnSave'
+import { getSiteSettings } from '@/lib/getSiteSettings'
 import type { BeforeAfter, Media, Review, WorkGallery } from '@/payload-types'
 
 export const metadata: Metadata = {
@@ -42,6 +43,7 @@ export default async function WorkPage() {
   const featured = baItems.find(item => item.featured) || baItems[0] || null
   const featuredBefore = (featured?.beforeImage as Media) ?? null
   const featuredAfter = (featured?.afterImage as Media) ?? null
+  const { phone } = await getSiteSettings()
 
   return (
     <>
@@ -157,7 +159,7 @@ export default async function WorkPage() {
           <p className="lede">Send a message or give Chelsea a call. She handles every booking herself.</p>
           <div className="cta-actions">
             <Link className="btn btn--solid" href="/contact">Send a message</Link>
-            <a className="btn btn--ghost" href="tel:+13053049579">Call or text 305-304-9579</a>
+            <a className="btn btn--ghost" href={`tel:+1${phone.replace(/\D/g, '')}`}>Call or text {phone}</a>
           </div>
         </div>
       </section>

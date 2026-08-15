@@ -1,13 +1,18 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 import { FaqAccordion, type AccordionItem } from '@/components/Accordion'
+import { getSiteSettings } from '@/lib/getSiteSettings'
 
 export const metadata: Metadata = {
   title: 'Cleaning FAQ',
   description: 'Answers on pricing, booking, supplies, insurance, pets, payment and service areas for house cleaning in St. Petersburg and Tampa.',
 }
 
-const FAQS: AccordionItem[] = [
+export const revalidate = 60
+
+const FALLBACK_FAQS: AccordionItem[] = [
   { question: 'Do I need to be home during the cleaning?', answer: 'No. Most clients give a door code or leave a key. You are welcome to stay home if you prefer, and plenty of people work through it. Either way is normal.' },
   { question: 'Do you bring your own cleaning supplies?', answer: 'Yes, everything is included. Products are low fragrance and safe around kids and pets. If you have something you prefer for a particular surface, leave it on the counter and it will be used instead.' },
   { question: 'How much does house cleaning cost in St. Pete and Tampa?', answer: 'A standard clean starts from $125 for a small studio. A deep clean starts from $205. Square footage, bathroom count and the current condition of the home move the number. Fill out the quote builder and Chelsea will reach out with a custom price.' },
@@ -27,7 +32,17 @@ const FAQS: AccordionItem[] = [
   { question: 'What makes Shine for Good different from other cleaning services?', answer: 'Chelsea cleans every home herself — not a rotating crew. That means you get the same person every time, someone who actually knows your space. And a portion of every clean goes to the Marc House in Key West, so your home getting cleaner makes a real difference beyond just the invoice.' },
 ]
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const { phone } = await getSiteSettings()
+  let faqs: AccordionItem[] = FALLBACK_FAQS
+  try {
+    const payload = await getPayload({ config })
+    const result = await payload.find({ collection: 'faqs', sort: 'order', limit: 100 })
+    if (result.docs.length) faqs = result.docs.map(f => ({ question: f.question, answer: f.answer }))
+  } catch {
+    // fall back to the defaults above
+  }
+
   return (
     <>
       <header className="page-hero">
@@ -49,7 +64,7 @@ export default function FaqPage() {
 
       <section className="sec">
         <div className="wrap">
-          <div className="rv"><FaqAccordion items={FAQS} /></div>
+          <div className="rv"><FaqAccordion items={faqs} /></div>
         </div>
       </section>
 
@@ -60,7 +75,7 @@ export default function FaqPage() {
           <p className="lede">Chelsea answers messages herself. Text is fastest, usually same day. Or <Link href="/policies" style={{ color: 'inherit', textDecoration: 'underline' }}>read through the full policies</Link> for the practical details on scheduling and payment.</p>
           <div className="cta-actions">
             <Link className="btn btn--solid" href="/contact">Send a message</Link>
-            <a className="btn btn--ghost" href="tel:+13053049579">Call or text 305-304-9579</a>
+            <a className="btn btn--ghost" href={`tel:+1${phone.replace(/\D/g, '')}`}>Call or text {phone}</a>
           </div>
         </div>
       </section>

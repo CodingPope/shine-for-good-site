@@ -12,7 +12,10 @@ import { BeforeAfter } from './collections/BeforeAfter'
 import { WorkGallery } from './collections/WorkGallery'
 import { Events } from './collections/Events'
 import { Reviews } from './collections/Reviews'
+import { FAQs } from './collections/FAQs'
+import { Policies } from './collections/Policies'
 import { SiteSettings } from './globals/SiteSettings'
+import { GivingBack } from './globals/GivingBack'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -28,7 +31,7 @@ export default buildConfig({
     },
     livePreview: {
       collections: ['journal-posts', 'before-after', 'work-gallery'],
-      globals: ['site-settings'],
+      globals: ['site-settings', 'giving-back'],
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
         { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
@@ -44,12 +47,15 @@ export default buildConfig({
         if (globalConfig?.slug === 'site-settings') {
           return `${serverURL}/about`
         }
+        if (globalConfig?.slug === 'giving-back') {
+          return `${serverURL}/giving-back`
+        }
         return serverURL
       },
     },
   },
-  collections: [Users, Media, JournalPosts, BeforeAfter, WorkGallery, Events, Reviews],
-  globals: [SiteSettings],
+  collections: [Users, Media, JournalPosts, BeforeAfter, WorkGallery, Events, Reviews, FAQs, Policies],
+  globals: [SiteSettings, GivingBack],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

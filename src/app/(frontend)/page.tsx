@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { PricingEstimator } from '@/components/PricingEstimator'
+import { getSiteSettings } from '@/lib/getSiteSettings'
 import type { Review } from '@/payload-types'
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ export default async function HomePage() {
   } catch {
     // fall back to the defaults above
   }
+  const { phone, email } = await getSiteSettings()
 
   return (
     <>
@@ -52,7 +54,7 @@ export default async function HomePage() {
           </p>
           <div className="hero-actions load-fade ld5">
             <Link className="btn btn--solid" href="/pricing">Get a quote</Link>
-            <a className="btn btn--ghost" href="tel:+13053049579">Call or text Chelsea</a>
+            <a className="btn btn--ghost" href={`tel:+1${phone.replace(/\D/g, '')}`}>Call or text Chelsea</a>
           </div>
           <p className="hero-note load-fade ld6">
             <b>Every clean gives back to the Marc House in Key West</b>
@@ -107,6 +109,8 @@ export default async function HomePage() {
         eyebrow="Get a price"
         heading={<>See what your clean<br />would cost.</>}
         lede="Move a few dials and get a real range in under a minute. No email required."
+        phone={phone}
+        email={email}
       />
 
       <section className="sec sec--tint">
@@ -116,7 +120,7 @@ export default async function HomePage() {
           <p className="lede">Send a message or give Chelsea a call. She handles every booking herself and will get back to you the same day.</p>
           <div className="cta-actions">
             <Link className="btn btn--solid" href="/contact">Send a message</Link>
-            <a className="btn btn--ghost" href="tel:+13053049579">Call or text 305-304-9579</a>
+            <a className="btn btn--ghost" href={`tel:+1${phone.replace(/\D/g, '')}`}>Call or text {phone}</a>
           </div>
         </div>
       </section>

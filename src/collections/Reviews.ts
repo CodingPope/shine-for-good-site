@@ -9,7 +9,8 @@ export const Reviews: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'location', 'order'],
-    description: 'Client testimonials shown on the home, work, and about pages.',
+    group: 'Content',
+    description: 'Client testimonials — shown on the home, work, and about pages automatically (up to 6, in order).',
   },
   fields: [
     {

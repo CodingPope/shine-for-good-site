@@ -5,6 +5,8 @@ export const Users: CollectionConfig = {
   auth: true,
   admin: {
     useAsTitle: 'email',
+    group: 'System',
+    description: 'Admin accounts that can log into this dashboard. Not shown anywhere on the public site.',
   },
   fields: [
     {

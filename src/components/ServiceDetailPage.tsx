@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { ServiceIcon, type ServiceIconName } from './ServiceIcon'
 import { FaqAccordion, type AccordionItem } from './Accordion'
 import { ContactSection } from './ContactSection'
+import { getSiteSettings } from '@/lib/getSiteSettings'
 
 export interface RelatedService {
   href: string
@@ -27,10 +28,12 @@ export interface ServiceDetailPageProps {
   related: RelatedService[]
 }
 
-export function ServiceDetailPage({
+export async function ServiceDetailPage({
   crumbLabel, eyebrow, title, lede, price, priceSub, priceCtaHref, priceCtaLabel,
   paragraphs, included, faqHeading, faq, related,
 }: ServiceDetailPageProps) {
+  const { phone, areas } = await getSiteSettings()
+  const phoneDigits = phone.replace(/\D/g, '')
   return (
     <>
       <header className="page-hero">
@@ -60,7 +63,7 @@ export function ServiceDetailPage({
                 <span className="amt">{price}</span>
                 <p className="sub">{priceSub}</p>
                 <Link className="btn btn--solid" href={priceCtaHref}>{priceCtaLabel}</Link>
-                <a className="btn btn--ghost" href="tel:+13053049579" style={{ width: '100%', justifyContent: 'center', marginTop: '.5rem' }}>Call or text</a>
+                <a className="btn btn--ghost" href={`tel:+1${phoneDigits}`} style={{ width: '100%', justifyContent: 'center', marginTop: '.5rem' }}>Call or text</a>
               </div>
             </div>
           </div>
@@ -98,7 +101,7 @@ export function ServiceDetailPage({
         </div>
       </section>
 
-      <ContactSection />
+      <ContactSection businessPhone={phone} areas={areas} />
     </>
   )
 }

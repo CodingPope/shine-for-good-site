@@ -12,7 +12,8 @@ export const Events: CollectionConfig = {
   admin: {
     useAsTitle: 'type',
     defaultColumns: ['type', 'page', 'createdAt'],
-    description: 'Click events tracked from the site (quote requests, calls, messages). Feeds the dashboard summary — not meant to be edited by hand.',
+    group: 'System',
+    description: 'Raw click events tracked from the site. This is what feeds the "Last 30 days" summary on the dashboard — you don\'t need to edit these by hand.',
     hidden: false,
   },
   fields: [

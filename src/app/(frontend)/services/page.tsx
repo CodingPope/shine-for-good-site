@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ServiceIcon } from '@/components/ServiceIcon'
+import { getSiteSettings } from '@/lib/getSiteSettings'
 
 export const metadata: Metadata = {
   title: 'Cleaning Services in St. Pete & Tampa',
@@ -17,7 +18,8 @@ const SERVICES = [
   { href: '/contact', icon: 'airbnb' as const, title: 'Airbnb & Short-Term Rentals', desc: 'Quick turnover cleans between guests. Linens, restocking, full reset — so your listing stays five-star ready every time.', price: 'Custom quote' },
 ]
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const { phone } = await getSiteSettings()
   return (
     <>
       <header className="page-hero">
@@ -59,7 +61,7 @@ export default function ServicesPage() {
           <p className="lede">Answer a few questions and the quote builder will help Chelsea put together the right price for your space.</p>
           <div className="cta-actions">
             <Link className="btn btn--solid" href="/pricing">Get a quote</Link>
-            <a className="btn btn--ghost" href="tel:+13053049579">Call or text 305-304-9579</a>
+            <a className="btn btn--ghost" href={`tel:+1${phone.replace(/\D/g, '')}`}>Call or text {phone}</a>
           </div>
         </div>
       </section>

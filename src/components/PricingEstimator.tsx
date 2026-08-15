@@ -48,9 +48,6 @@ const FREQ_NAME: Record<string, string> = { once: 'one time', wk: 'every week', 
 const BED_OPTIONS = [1, 2, 3, 4, 5, 6]
 const BATH_OPTIONS = [1, 1.5, 2, 2.5, 3, 4]
 
-const PHONE_DIGITS = '+13053049579'
-const EMAIL = 'cmsawyer12@gmail.com'
-
 function money(n: number) {
   return '$' + Math.round(n).toLocaleString('en-US')
 }
@@ -59,9 +56,15 @@ interface PricingEstimatorProps {
   eyebrow?: string
   heading?: React.ReactNode
   lede?: string
+  phone?: string
+  email?: string
 }
 
-export function PricingEstimator({ eyebrow, heading, lede }: PricingEstimatorProps = {}) {
+export function PricingEstimator({
+  eyebrow, heading, lede,
+  phone = '305-304-9579', email = 'cmsawyer12@gmail.com',
+}: PricingEstimatorProps = {}) {
+  const phoneDigits = `+1${phone.replace(/\D/g, '')}`
   const [svc, setSvc] = useState<string>('standard')
   const [sqft, setSqft] = useState(1500)
   const [bed, setBed] = useState(3)
@@ -134,14 +137,14 @@ export function PricingEstimator({ eyebrow, heading, lede }: PricingEstimatorPro
   const sendSms = () => {
     if (!qName.trim() || !qPhone.trim()) { showToast('Add your name and phone so Chelsea can reply.'); return }
     track('quote-sms')
-    window.location.href = `sms:${PHONE_DIGITS}?&body=${encodeURIComponent(summary())}`
+    window.location.href = `sms:${phoneDigits}?&body=${encodeURIComponent(summary())}`
     showToast('Opening your messages app with the details filled in.')
   }
 
   const sendEmail = () => {
     if (!qName.trim()) { showToast('Add your name first.'); return }
     track('quote-email')
-    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent('Quote request: ' + result.forLine)}&body=${encodeURIComponent(summary())}`
+    window.location.href = `mailto:${email}?subject=${encodeURIComponent('Quote request: ' + result.forLine)}&body=${encodeURIComponent(summary())}`
     showToast('Opening your email with the details filled in.')
   }
 
@@ -283,7 +286,7 @@ export function PricingEstimator({ eyebrow, heading, lede }: PricingEstimatorPro
                 </div>
                 <p className="res-fine">Your details go straight to Chelsea&apos;s phone. No mailing list, no automated follow-up sequence.</p>
               </div>
-              <a className="btn btn--ghost" href="tel:+13053049579" style={{ marginTop: '.8rem', display: 'block', textAlign: 'center' }}>Rather just talk? Call</a>
+              <a className="btn btn--ghost" href={`tel:${phoneDigits}`} style={{ marginTop: '.8rem', display: 'block', textAlign: 'center' }}>Rather just talk? Call</a>
             </div>
           </div>
         </div>

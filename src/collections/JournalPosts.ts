@@ -8,6 +8,8 @@ export const JournalPosts: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'publishedAt', '_status'],
+    group: 'Content',
+    description: 'Blog posts shown on the Journal page — cleaning tips, behind-the-scenes stories, updates. Save as draft to use Live Preview before publishing.',
   },
   versions: {
     drafts: {

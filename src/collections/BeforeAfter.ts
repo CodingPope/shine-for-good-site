@@ -8,7 +8,8 @@ export const BeforeAfter: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'serviceType', 'location'],
-    description: 'Before & after photo pairs shown on the Work page.',
+    group: 'Content',
+    description: 'Draggable before/after photo comparisons on the Work page. Each entry needs BOTH a before and an after photo of the same spot. Check "featured" on the one you want as the big slider at the top.',
   },
   fields: [
     {

@@ -8,7 +8,8 @@ export const WorkGallery: CollectionConfig = {
   admin: {
     useAsTitle: 'caption',
     defaultColumns: ['caption', 'location', 'serviceType'],
-    description: 'Individual photos shown in the gallery grid on the Work page.',
+    group: 'Content',
+    description: 'Single photos (not paired before/after) shown in the gallery grid on the Work page. For side-by-side comparisons, use "Before & After" instead.',
   },
   fields: [
     {

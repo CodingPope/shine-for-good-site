@@ -5,6 +5,7 @@ import { ScrollReveal } from '@/components/ScrollReveal'
 import { ClickTracking } from '@/components/ClickTracking'
 import { LocalBusinessSchema } from '@/components/LocalBusinessSchema'
 import { SITE_URL } from '@/lib/site'
+import { getSiteSettings } from '@/lib/getSiteSettings'
 import '../globals.css'
 
 export const metadata: Metadata = {
@@ -21,7 +22,9 @@ export const metadata: Metadata = {
   },
 }
 
-export default function FrontendLayout({ children }: { children: React.ReactNode }) {
+export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
+  const { phone, email, areas } = await getSiteSettings()
+
   return (
     <html lang="en">
       <head>
@@ -40,9 +43,9 @@ export default function FrontendLayout({ children }: { children: React.ReactNode
         <ClickTracking />
         <a className="skip" href="#main">Skip to content</a>
         <div className="grain" aria-hidden="true" />
-        <Nav />
+        <Nav phone={phone} />
         <main id="main">{children}</main>
-        <Footer />
+        <Footer phone={phone} email={email} areas={areas} />
         <div className="toast" id="toast" role="status" aria-live="polite" />
       </body>
     </html>

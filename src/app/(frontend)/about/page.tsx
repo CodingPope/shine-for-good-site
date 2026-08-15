@@ -22,6 +22,7 @@ export default async function AboutPage() {
   const payload = await getPayload({ config })
 
   let photo: Media | null = null
+  let phone = '305-304-9579'
   let reviews: (Review | (typeof FALLBACK_REVIEWS)[number])[] = FALLBACK_REVIEWS
   try {
     const [settings, reviewsResult] = await Promise.all([
@@ -29,6 +30,7 @@ export default async function AboutPage() {
       payload.find({ collection: 'reviews', sort: 'order', limit: 6 }),
     ])
     photo = (settings.aboutPhoto as Media) ?? null
+    if (settings.contact?.phone) phone = settings.contact.phone
     if (reviewsResult.docs.length) reviews = reviewsResult.docs
   } catch {
     // fall back to the defaults above
@@ -97,7 +99,7 @@ export default async function AboutPage() {
           <p className="lede">Send a message or give Chelsea a call. She handles every booking herself and will get back to you the same day.</p>
           <div className="cta-actions">
             <Link className="btn btn--solid" href="/pricing">Get a quote</Link>
-            <a className="btn btn--ghost" href="tel:+13053049579">Call or text 305-304-9579</a>
+            <a className="btn btn--ghost" href={`tel:+1${phone.replace(/\D/g, '')}`}>Call or text {phone}</a>
           </div>
         </div>
       </section>

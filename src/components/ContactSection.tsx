@@ -4,20 +4,23 @@ import Link from 'next/link'
 import { showToast } from '@/lib/toast'
 import { track } from '@/lib/track'
 
-const AREAS = [
+const DEFAULT_AREAS = [
   'St. Petersburg', 'Tampa', 'Clearwater', 'Gulfport', 'St. Pete Beach',
   'Treasure Island', 'Pinellas Park', 'Seminole', 'South Tampa', 'Kenneth City',
 ]
 
-const PHONE_DIGITS = '+13053049579'
-
 export function ContactSection({
   heading = "Let's find your\ncleaning day.",
   showEstimateLink = true,
+  businessPhone = '305-304-9579',
+  areas = DEFAULT_AREAS,
 }: {
   heading?: string
   showEstimateLink?: boolean
+  businessPhone?: string
+  areas?: string[]
 }) {
+  const businessPhoneDigits = `+1${businessPhone.replace(/\D/g, '')}`
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
@@ -35,7 +38,7 @@ export function ContactSection({
       `Looking for: ${what || '-'}`, '', msg,
     ].join('\n')
     track('contact-form')
-    window.location.href = `sms:${PHONE_DIGITS}?&body=${encodeURIComponent(body)}`
+    window.location.href = `sms:${businessPhoneDigits}?&body=${encodeURIComponent(body)}`
     showToast('Opening your messages app so you can hit send.')
   }
 
@@ -52,20 +55,20 @@ export function ContactSection({
         <div className="contact-grid">
           <div className="rv">
             <p className="script" style={{ fontSize: '2rem', margin: '0 0 .4rem' }}>Call or Text</p>
-            <a className="tel" href="tel:+13053049579">
+            <a className="tel" href={`tel:${businessPhoneDigits}`}>
               <span className="dot">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                   <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" />
                 </svg>
               </span>
-              <span>305-304-9579</span>
+              <span>{businessPhone}</span>
             </a>
             <p className="body-s" style={{ marginTop: '1.6rem', maxWidth: '44ch' }}>
               Texts get answered fastest, usually the same day. If you would rather talk it through, say so and Chelsea will call you back at a time that works.
             </p>
             <p className="eyebrow" style={{ margin: '2.4rem 0 .8rem' }}>Where we clean</p>
             <div className="areas">
-              {AREAS.map(a => <span key={a} className="area">{a}</span>)}
+              {areas.map(a => <span key={a} className="area">{a}</span>)}
             </div>
           </div>
           <div className="rv rv-d2">

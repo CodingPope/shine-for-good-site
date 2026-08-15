@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { draftMode } from 'next/headers'
 import { RefreshRouteOnSave } from '@/components/RefreshRouteOnSave'
+import { getSiteSettings } from '@/lib/getSiteSettings'
 import type { JournalPost, Media } from '@/payload-types'
 
 export const revalidate = 60
@@ -60,6 +61,7 @@ export default async function JournalPostPage({ params }: { params: Promise<{ sl
   const post = docs[0]
   if (!post) notFound()
 
+  const { phone } = await getSiteSettings()
   const cover = (post.coverImage as Media) ?? null
   const publishedDate = post.publishedAt
     ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
@@ -120,7 +122,7 @@ export default async function JournalPostPage({ params }: { params: Promise<{ sl
                   <div className="prose-cta">
                     <span className="body-s" style={{ flex: 1, minWidth: 200 }}>Ready to hand it over? Build an estimate in under a minute.</span>
                     <Link className="btn btn--solid" href="/pricing">Get an estimate</Link>
-                    <a className="btn btn--ghost" href="tel:+13053049579">Call Chelsea</a>
+                    <a className="btn btn--ghost" href={`tel:+1${phone.replace(/\D/g, '')}`}>Call Chelsea</a>
                   </div>
                 </div>
               )}

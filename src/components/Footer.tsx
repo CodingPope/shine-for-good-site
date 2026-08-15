@@ -19,14 +19,15 @@ const MORE = [
   { href: '/contact', label: 'Contact' },
 ]
 
-const AREAS = [
+const DEFAULT_AREAS = [
   'St. Petersburg','Tampa','Clearwater','Gulfport','St. Pete Beach',
   'Treasure Island','Pinellas Park','Seminole','South Tampa','Kenneth City',
 ]
 
-export function Footer({ phone = '305-304-9579', email = 'cmsawyer12@gmail.com' }: {
+export function Footer({ phone = '305-304-9579', email = 'cmsawyer12@gmail.com', areas = DEFAULT_AREAS }: {
   phone?: string
   email?: string
+  areas?: string[]
 }) {
   const telHref = `tel:+1${phone.replace(/\D/g, '')}`
   const year = new Date().getFullYear()
@@ -42,7 +43,7 @@ export function Footer({ phone = '305-304-9579', email = 'cmsawyer12@gmail.com' 
             </p>
             <div className="orn orn--left" aria-hidden="true"><i /></div>
             <p style={{ fontSize: '.72rem', opacity: .7, maxWidth: '34ch', margin: 0 }}>
-              Serving {AREAS.join(', ')}.
+              Serving {areas.join(', ')}.
             </p>
             <p style={{ fontSize: '.78rem', margin: '.8rem 0 0' }}>Chelsea Sawyer, owner</p>
             <a href={telHref} style={{ marginTop: '.4rem' }}>{phone}</a>
