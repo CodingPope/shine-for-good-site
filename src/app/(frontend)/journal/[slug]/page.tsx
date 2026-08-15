@@ -38,9 +38,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   })
   const post = docs[0]
   if (!post) return { title: 'Post not found' }
+  const cover = (post.coverImage as Media) ?? null
   return {
     title: post.title,
     description: post.excerpt || undefined,
+    openGraph: {
+      type: 'article',
+      title: post.title,
+      description: post.excerpt || undefined,
+      publishedTime: post.publishedAt || undefined,
+      images: cover?.url ? [cover.url] : undefined,
+    },
   }
 }
 
