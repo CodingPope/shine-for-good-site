@@ -243,8 +243,8 @@ We appreciate your business!</textarea>
 
 <div class="toast" id="toast"></div>
 
-<!-- jsPDF 2.5.2 (https://github.com/parallax/jsPDF), MIT licensed, loaded from cdnjs -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+<!-- jsPDF 2.5.2 (https://github.com/parallax/jsPDF), MIT licensed, self-hosted so ad blockers / offline use can't break PDF generation -->
+<script src="/vendor-jspdf.umd.min.js"></script>
 <script>/* Draws the Shine for Good invoice with jsPDF. Pure: takes the jsPDF
    constructor and a state object, returns the doc. Letter, points. */
 function buildInvoicePdf(jsPDF, s) {
