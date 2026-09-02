@@ -25,7 +25,7 @@ export default function ResidentialCleaningPage() {
         'Kitchen counters, sink and backsplash', 'Stovetop, hood and appliance fronts', 'Microwave inside and out',
         'All bathrooms, top to bottom', 'Toilets, tubs, showers and glass', 'Mirrors and chrome polished',
         'Floors vacuumed and mopped', 'Dusting, high and low', 'Ceiling fans and light fixtures',
-        'Beds made or linens changed', 'Trash out, liners replaced', 'Doors, switches and handles wiped',
+        'Trash out, liners replaced', 'Doors, switches and handles wiped',
       ]}
       faqHeading="About residential cleaning."
       faq={[
