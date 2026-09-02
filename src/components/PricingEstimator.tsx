@@ -11,8 +11,8 @@ const CFG = {
 }
 
 const ADDONS = [
-  { id: 'fridge', name: 'Inside the fridge', price: 30 },
-  { id: 'oven', name: 'Inside the oven', price: 30 },
+  { id: 'fridge', name: 'Inside the fridge', price: 45 },
+  { id: 'oven', name: 'Inside the oven', price: 45 },
   { id: 'windows', name: 'Interior windows', price: 45 },
   { id: 'base', name: 'Baseboards by hand', price: 30 },
   { id: 'cab', name: 'Inside cabinets', price: 40 },

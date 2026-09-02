@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#5A6A38">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="SFG Invoices">
+<title>Shine for Good — Invoices</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%235A6A38'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-size='32' font-weight='bold' text-anchor='middle' fill='%23FBF6EE'%3ES%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%235A6A38'/%3E%3Ctext x='32' y='43' font-family='Georgia,serif' font-size='32' font-weight='bold' text-anchor='middle' fill='%23FBF6EE'%3ES%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --paper:#FBF6EE; --olive-dark:#5A6A38; --olive:#6E7A4A; --olive-soft:#7C8757;
+    --slate:#3F5A72; --tan:#A87850; --box:#EFE9DF; --rule:#D8D1C2; --ink:#2F2E2B;
+    --muted:#7C7469; --danger:#B4553F; --bar-h:70px; --safe-b:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;background:#EFEAE0;color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:calc(var(--bar-h) + var(--safe-b) + 24px);
+    overscroll-behavior-y:none;
+  }
+  button{font-family:inherit;}
+
+  /* ---------- top bar ---------- */
+  .appbar{
+    position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;
+    padding:12px 16px;background:var(--olive-dark);color:var(--paper);
+  }
+  .appbar .brand{flex:1;line-height:1.1;}
+  .appbar .brand b{display:block;font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:600;}
+  .appbar .brand small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.75;margin-top:2px;}
+  .ghost{
+    min-height:40px;padding:0 14px;font-size:13px;font-weight:600;letter-spacing:.06em;
+    background:transparent;color:var(--paper);border:1px solid rgba(251,246,238,.55);border-radius:8px;
+  }
+  .ghost:active{background:rgba(251,246,238,.16);}
+
+  /* ---------- sections ---------- */
+  .wrap{max-width:560px;margin:0 auto;padding:14px 12px 0;}
+  .card{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:16px;margin-bottom:12px;}
+  .card h2{
+    margin:0 0 12px;font-family:Georgia,'Times New Roman',serif;font-size:15px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--olive-dark);
+  }
+  .card h2 .step{
+    display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;
+    border-radius:50%;background:var(--olive);color:var(--paper);font-family:inherit;
+    font-size:12px;letter-spacing:0;margin-right:8px;vertical-align:-3px;
+  }
+  label{display:block;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--olive-soft);margin:10px 0 5px;}
+  label:first-of-type{margin-top:0;}
+  input,textarea{
+    width:100%;font:inherit;font-size:17px;color:var(--ink);
+    background:#fff;border:1px solid var(--rule);border-radius:8px;
+    padding:11px 12px;min-height:46px;-webkit-appearance:none;appearance:none;
+  }
+  textarea{resize:none;min-height:80px;line-height:1.45;}
+  input:focus,textarea:focus{outline:none;border-color:var(--tan);box-shadow:0 0 0 3px rgba(168,120,80,.18);}
+  input::placeholder,textarea::placeholder{color:#B3ABA0;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .hint{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.45;}
+
+  /* ---------- line items ---------- */
+  .item{border:1px solid var(--rule);border-radius:10px;padding:14px;margin-bottom:12px;background:#FDFAF5;}
+  .item-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .item-top b{font-size:13px;color:var(--olive-soft);letter-spacing:.08em;text-transform:uppercase;}
+  .amount-wrap{position:relative;}
+  .amount-wrap span{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:17px;color:var(--muted);}
+  .amount-wrap input{padding-left:26px;font-weight:600;}
+  .remove{
+    width:100%;min-height:44px;margin-top:12px;font-size:14px;font-weight:600;letter-spacing:.04em;
+    background:transparent;color:var(--danger);border:1px solid #E3C7BF;border-radius:8px;
+  }
+  .remove:active{background:#F8ECE8;}
+  .add{
+    width:100%;min-height:48px;font-size:15px;font-weight:600;letter-spacing:.03em;
+    background:#fff;color:var(--olive-dark);border:1.5px dashed var(--olive);border-radius:10px;
+  }
+  .add:active{background:#F1EEE2;}
+  .total{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-top:14px;padding:14px 16px;border-radius:10px;background:#E6E4D5;
+  }
+  .total span{font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--olive-dark);}
+  .total b{font-size:24px;font-weight:700;}
+
+  details.card summary{
+    list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+    font-family:Georgia,'Times New Roman',serif;font-size:15px;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--olive-dark);
+  }
+  details.card summary::-webkit-details-marker{display:none;}
+  details.card summary::after{content:'+';font-family:inherit;font-size:22px;line-height:1;}
+  details.card[open] summary::after{content:'\2013';}
+  details.card[open] summary{margin-bottom:12px;}
+
+  /* ---------- bottom bar ---------- */
+  .actionbar{
+    position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;gap:10px;
+    padding:12px 12px calc(12px + var(--safe-b));background:var(--paper);
+    border-top:1px solid var(--rule);box-shadow:0 -2px 14px rgba(0,0,0,.08);
+  }
+  .actionbar button{
+    min-height:50px;font-size:15px;font-weight:600;letter-spacing:.03em;border-radius:10px;
+    border:1px solid var(--olive);background:var(--paper);color:var(--olive-dark);
+  }
+  .actionbar .sec{flex:0 0 auto;padding:0 18px;}
+  .actionbar .primary{flex:1;background:var(--olive);color:var(--paper);}
+  .actionbar .primary:active{background:var(--olive-dark);}
+  .actionbar button:disabled{opacity:.55;}
+
+  /* ---------- history sheet ---------- */
+  .scrim{position:fixed;inset:0;z-index:40;background:rgba(47,46,43,.45);opacity:0;pointer-events:none;transition:opacity .18s;}
+  body.sheet-open .scrim{opacity:1;pointer-events:auto;}
+  .sheet{
+    position:fixed;left:0;right:0;bottom:0;z-index:41;max-height:80vh;display:flex;flex-direction:column;
+    background:var(--paper);border-radius:16px 16px 0 0;box-shadow:0 -6px 30px rgba(0,0,0,.24);
+    transform:translateY(102%);transition:transform .22s ease;padding-bottom:var(--safe-b);
+  }
+  body.sheet-open .sheet{transform:translateY(0);}
+  .sheet-head{display:flex;align-items:center;gap:10px;padding:16px 16px 12px;border-bottom:1px solid var(--rule);}
+  .sheet-head h2{
+    margin:0;flex:1;font-family:Georgia,'Times New Roman',serif;font-size:17px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--olive-dark);
+  }
+  .close{min-height:40px;padding:0 14px;font-size:13px;font-weight:600;border:1px solid var(--rule);border-radius:8px;background:var(--paper);color:var(--olive-dark);}
+  .list{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 0 14px;}
+  .rec{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px dotted var(--rule);}
+  .rec-main{flex:1;min-width:0;}
+  .rec-name{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rec-sub{font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .rec-amt{font-size:15px;font-weight:600;color:var(--olive-dark);white-space:nowrap;}
+  .rec-del{min-width:42px;min-height:42px;font-size:18px;border:1px solid var(--rule);border-radius:8px;background:var(--paper);color:#9A9086;}
+  .empty{padding:28px 18px;text-align:center;font-size:14.5px;color:var(--muted);line-height:1.5;}
+
+  .toast{
+    position:fixed;left:50%;bottom:calc(var(--bar-h) + var(--safe-b) + 24px);z-index:60;
+    transform:translate(-50%,10px);background:var(--olive-dark);color:var(--paper);
+    font-size:14px;padding:12px 18px;border-radius:24px;box-shadow:0 4px 16px rgba(0,0,0,.22);
+    opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:90vw;text-align:center;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0);}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <div class="brand"><b>Shine for Good</b><small>Invoices</small></div>
+  <button type="button" class="ghost" id="btnHistory">History</button>
+</header>
+
+<main class="wrap">
+
+  <section class="card">
+    <h2><span class="step">1</span>Client</h2>
+    <label for="clientName">Name</label>
+    <input id="clientName" type="text" autocomplete="off" autocapitalize="words" placeholder="Client name">
+    <label for="clientDetails">Address / phone (optional)</label>
+    <textarea id="clientDetails" rows="2" placeholder="123 Main St&#10;(305) 555-0100"></textarea>
+  </section>
+
+  <section class="card">
+    <h2><span class="step">2</span>Services</h2>
+    <div id="items"></div>
+    <button type="button" class="add" id="btnAdd">+ Add another service</button>
+    <div class="total"><span>Total due</span><b id="total">$0.00</b></div>
+  </section>
+
+  <section class="card">
+    <h2><span class="step">3</span>Invoice details</h2>
+    <div class="row2">
+      <div>
+        <label for="invNum">Invoice #</label>
+        <input id="invNum" type="text" autocomplete="off" autocapitalize="characters">
+      </div>
+      <div>
+        <label for="invDate">Invoice date</label>
+        <input id="invDate" type="date">
+      </div>
+    </div>
+    <div class="row2">
+      <div>
+        <label for="svcDate">Service date</label>
+        <input id="svcDate" type="text" autocomplete="off" value="See Below">
+      </div>
+      <div>
+        <label for="dueDate">Due</label>
+        <input id="dueDate" type="text" autocomplete="off" value="Upon Receipt">
+      </div>
+    </div>
+    <div class="hint">Invoice # fills in automatically. Change it only if you need to.</div>
+  </section>
+
+  <details class="card" id="bizCard">
+    <summary>Business info</summary>
+    <label for="bizName">Business name</label>
+    <input id="bizName" type="text" value="Shine for Good Cleaning LLC">
+    <label for="bizSub">Tagline</label>
+    <input id="bizSub" type="text" value="Residential &amp; Small Business Cleaning">
+    <label for="bizMotto">Motto</label>
+    <input id="bizMotto" type="text" value="Cleaning with purpose for a cause.">
+    <div class="row2">
+      <div>
+        <label for="zelleNum">Zelle</label>
+        <input id="zelleNum" type="tel" value="(305) 304-9579">
+      </div>
+      <div>
+        <label for="venmoNum">Venmo</label>
+        <input id="venmoNum" type="tel" value="(305) 304-9579">
+      </div>
+    </div>
+    <label for="payLead">Payment line</label>
+    <input id="payLead" type="text" value="Please remit payment via:">
+    <label for="payTerms">Terms</label>
+    <input id="payTerms" type="text" value="Payment is due upon completion of service.">
+    <label for="footText">Footer</label>
+    <textarea id="footText" rows="2">For choosing Shine for Good Cleaning LLC.
+We appreciate your business!</textarea>
+    <div class="hint">These are remembered for every invoice.</div>
+  </details>
+
+</main>
+
+<nav class="actionbar">
+  <button type="button" class="sec" id="btnNew">New</button>
+  <button type="button" class="primary" id="btnPdf">Create PDF</button>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<section class="sheet" id="sheet" aria-hidden="true">
+  <div class="sheet-head">
+    <h2>Past invoices</h2>
+    <button type="button" class="close" id="btnClose">Close</button>
+  </div>
+  <div class="list" id="list"></div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<!-- jsPDF 2.5.2 (https://github.com/parallax/jsPDF), MIT licensed, loaded from cdnjs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js"></script>
+<script>/* Draws the Shine for Good invoice with jsPDF. Pure: takes the jsPDF
+   constructor and a state object, returns the doc. Letter, points. */
+function buildInvoicePdf(jsPDF, s) {
+  var OLIVE = [90, 106, 56], OLIVE_MID = [110, 122, 74], OLIVE_SOFT = [124, 135, 87];
+  var SLATE = [63, 90, 114], TAN = [168, 120, 80], TAN_SOFT = [185, 141, 99];
+  var INK = [47, 46, 43], MUTED = [110, 106, 97], RULE = [216, 209, 194];
+  var BAND = [230, 228, 213], BOX = [239, 233, 223], PAPER = [251, 246, 238];
+
+  var doc = new jsPDF({ unit: 'pt', format: 'letter' });
+  var W = 612, H = 792, M = 46, CW = W - M * 2;
+
+  function money(n) {
+    n = Number(n) || 0;
+    var neg = n < 0; n = Math.abs(n);
+    var str = n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return (neg ? '-$' : '$') + str;
+  }
+  function txt(t, x, y, o) {
+    o = o || {};
+    doc.setFont(o.font || 'helvetica', o.style || 'normal');
+    doc.setFontSize(o.size || 10);
+    doc.setTextColor.apply(doc, o.color || INK);
+    var opts = {};
+    if (o.align) opts.align = o.align;
+    if (o.spacing) opts.charSpace = o.spacing;
+    doc.text(String(t == null ? '' : t), x, y, opts);
+  }
+  function line(x1, y1, x2, y2, color, w) {
+    doc.setDrawColor.apply(doc, color || RULE);
+    doc.setLineWidth(w || 0.6);
+    doc.line(x1, y1, x2, y2);
+  }
+  function rect(x, y, w, h, fill) {
+    doc.setFillColor.apply(doc, fill);
+    doc.rect(x, y, w, h, 'F');
+  }
+  function wrap(t, width, font, style, size) {
+    doc.setFont(font || 'helvetica', style || 'normal');
+    doc.setFontSize(size || 10);
+    return doc.splitTextToSize(String(t || ''), width);
+  }
+  function dotRule(x1, x2, y, color) {
+    var mid = (x1 + x2) / 2;
+    line(x1, y, mid - 7, y, color);
+    line(mid + 7, y, x2, y, color);
+    doc.setFillColor.apply(doc, color);
+    doc.circle(mid, y, 1.6, 'F');
+  }
+
+  // Paper background so the brand tone survives on any viewer
+  rect(0, 0, W, H, PAPER);
+
+  /* ---------- Header: brand (left) ---------- */
+  var lx = M, lcx = M + 118; // left column center
+  var y = 52;
+  // sunburst
+  doc.setDrawColor.apply(doc, TAN_SOFT); doc.setLineWidth(1.1);
+  var cx = lcx, cy = y + 8, rays = [-80, -60, -40, -20, 0, 20, 40, 60, 80];
+  for (var r = 0; r < rays.length; r++) {
+    var a = (rays[r] - 90) * Math.PI / 180;
+    doc.line(cx + Math.cos(a) * 6, cy + Math.sin(a) * 6, cx + Math.cos(a) * 22, cy + Math.sin(a) * 22);
+  }
+  y += 44;
+  txt('Shine', lcx, y, { font: 'times', style: 'bold', size: 44, color: OLIVE, align: 'center' });
+  y += 38;
+  doc.setFont('times', 'italic'); doc.setFontSize(24);
+  var forW = doc.getTextWidth('for ');
+  doc.setFont('times', 'bold'); doc.setFontSize(44);
+  var goodW = doc.getTextWidth('Good');
+  var startX = lcx - (forW + goodW) / 2;
+  txt('for', startX, y - 2, { font: 'times', style: 'italic', size: 24, color: TAN });
+  txt('Good', startX + forW, y, { font: 'times', style: 'bold', size: 44, color: SLATE });
+  y += 16;
+  dotRule(lx + 20, lx + 216, y, TAN_SOFT);
+  y += 18;
+  txt('WHERE EVERY CLEAN', lcx, y, { size: 8, color: TAN, align: 'center', spacing: 2.2 });
+  y += 13;
+  txt('MAKES A DIFFERENCE.', lcx, y, { size: 8, color: TAN, align: 'center', spacing: 2.2 });
+  y += 23;
+  txt((s.bizName || '').toUpperCase(), lx, y, { style: 'bold', size: 12, color: OLIVE, spacing: 0.6 });
+  y += 7; line(lx, y, lx + 236, y);
+  y += 15;
+  txt((s.bizSub || '').toUpperCase(), lx, y, { size: 7.5, color: TAN, spacing: 1.6 });
+  y += 15;
+  txt(s.bizMotto || '', lx, y, { font: 'times', style: 'italic', size: 13, color: OLIVE_SOFT });
+  var leftBottom = y;
+
+  /* ---------- Header: invoice meta (right) ---------- */
+  var rx = M + CW / 2 + 14, rw = CW / 2 - 14, rcx = rx + rw / 2;
+  var yy = 86;
+  txt('INVOICE', rcx, yy, { font: 'times', style: 'bold', size: 38, color: OLIVE, align: 'center', spacing: 3 });
+  yy += 14; dotRule(rx + 30, rx + rw - 30, yy, TAN_SOFT);
+  yy += 20;
+  var meta = [
+    ['INVOICE #', s.invNum], ['INVOICE DATE', s.invDate],
+    ['SERVICE DATE', s.svcDate], ['DUE DATE', s.dueDate]
+  ];
+  var kw = 96, rowH = 22;
+  line(rx, yy, rx, yy + rowH * meta.length);
+  line(rx + kw, yy, rx + kw, yy + rowH * meta.length);
+  for (var i = 0; i < meta.length; i++) {
+    var my = yy + rowH * i + 15;
+    txt(meta[i][0], rx + 12, my, { style: 'bold', size: 8, color: OLIVE, spacing: 1 });
+    txt(meta[i][1] || '', rx + kw + 14, my, { size: 10.5 });
+  }
+  yy += rowH * meta.length;
+  y = Math.max(leftBottom, yy) + 20;
+
+  /* ---------- Bill To ---------- */
+  var bw = CW * 0.47;
+  txt('BILL TO', lx, y, { font: 'times', style: 'bold', size: 15, color: OLIVE, spacing: 2 });
+  y += 6; line(lx, y, lx + bw, y);
+  y += 8;
+  var billLines = wrap(s.billTo || '', bw - 24, 'helvetica', 'normal', 10.5);
+  var billH = Math.max(46, billLines.length * 14 + 18);
+  rect(lx, y, bw, billH, BOX);
+  for (var b = 0; b < billLines.length; b++) {
+    txt(billLines[b], lx + 12, y + 17 + b * 14, { size: 10.5 });
+  }
+  y += billH + 16;
+
+  /* ---------- Items table ---------- */
+  var amtW = CW * 0.27, descW = CW - amtW, headH = 26;
+  function tableHead(yh) {
+    rect(lx, yh, CW, headH, OLIVE_MID);
+    txt('DESCRIPTION', lx + 14, yh + 17, { size: 9, color: PAPER, spacing: 1.8 });
+    txt('AMOUNT', lx + CW - 14, yh + 17, { size: 9, color: PAPER, spacing: 1.8, align: 'right' });
+    return yh + headH;
+  }
+  var tableTop = y;
+  y = tableHead(y);
+  var items = (s.items || []).filter(function (it) {
+    return (it.title || it.date || it.note || it.amount);
+  });
+  if (!items.length) items = [{ title: '', date: '', note: '', amount: 0 }];
+  var total = 0;
+  for (var k = 0; k < items.length; k++) {
+    var it = items[k];
+    var tl = wrap(it.title || '', descW - 28, 'helvetica', 'bold', 10.5);
+    var dl = it.date ? wrap(it.date, descW - 28, 'helvetica', 'normal', 9.5) : [];
+    var nl = it.note ? wrap(it.note, descW - 28, 'helvetica', 'italic', 9) : [];
+    var rh = 11 + tl.length * 13 + dl.length * 12 + nl.length * 11.5 + 6;
+    if (y + rh > H - 70) {
+      line(lx, tableTop, lx, y); line(lx + CW, tableTop, lx + CW, y);
+      line(lx + descW, tableTop + headH, lx + descW, y);
+      doc.addPage(); rect(0, 0, W, H, PAPER);
+      y = 60; tableTop = y; y = tableHead(y);
+    }
+    var ty = y + 15;
+    for (var a = 0; a < tl.length; a++) { txt(tl[a], lx + 14, ty, { style: 'bold', size: 10.5 }); ty += 13; }
+    for (var d = 0; d < dl.length; d++) { txt(dl[d], lx + 14, ty, { size: 9.5 }); ty += 12; }
+    for (var n = 0; n < nl.length; n++) { txt(nl[n], lx + 14, ty, { style: 'italic', size: 9, color: MUTED }); ty += 11.5; }
+    var amt = Number(it.amount) || 0; total += amt;
+    txt(money(amt), lx + CW - 14, y + 15, { size: 11, align: 'right' });
+    y += rh;
+    if (k < items.length - 1) {
+      doc.setLineDashPattern([1, 2], 0); line(lx + 1, y, lx + CW - 1, y); doc.setLineDashPattern([], 0);
+    }
+  }
+  // total band
+  rect(lx, y, CW, 34, BAND);
+  txt('TOTAL DUE', lx + descW - 14, y + 22, { size: 12, color: OLIVE, spacing: 1.6, align: 'right' });
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(13);
+  var tw = doc.getTextWidth(money(total));
+  txt(money(total), lx + CW - 14 - tw, y + 22, { style: 'bold', size: 13 });
+  y += 34;
+  // table borders
+  line(lx, tableTop, lx, y); line(lx + CW, tableTop, lx + CW, y);
+  line(lx, y, lx + CW, y);
+  line(lx + descW, tableTop + headH, lx + descW, y);
+  y += 22;
+  if (y + 158 > H - 20) { doc.addPage(); rect(0, 0, W, H, PAPER); y = 70; }
+
+  /* ---------- Payment ---------- */
+  var ccx = W / 2;
+  txt('PAYMENT', ccx, y, { font: 'times', style: 'bold', size: 15, color: OLIVE, align: 'center', spacing: 2.2 });
+  y += 8; dotRule(ccx - 60, ccx + 60, y, TAN_SOFT);
+  y += 16;
+  txt(s.payLead || '', ccx, y, { style: 'bold', size: 10.5, align: 'center' });
+  y += 22;
+  // Zelle | num  ||  Venmo | num
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(15);
+  var zW = doc.getTextWidth('Zelle'), vW = doc.getTextWidth('venmo') + 20;
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5);
+  var znW = doc.getTextWidth(s.zelleNum || ''), vnW = doc.getTextWidth(s.venmoNum || '');
+  var gap = 14, blockW = zW + gap + 1 + gap + znW + 28 + vW + gap + 1 + gap + vnW;
+  var px = ccx - blockW / 2;
+  txt('Zelle', px, y, { style: 'bold', size: 15, color: [109, 30, 212] });
+  px += zW + gap; line(px, y - 12, px, y + 3); px += gap;
+  txt(s.zelleNum || '', px, y, { size: 10.5 });
+  px += znW + 14; line(px, y - 12, px, y + 3); px += 14;
+  // venmo mark
+  doc.setFillColor(0, 140, 255); doc.roundedRect(px, y - 12, 15, 15, 3, 3, 'F');
+  txt('V', px + 7.5, y - 1, { style: 'bold', size: 10, color: [255, 255, 255], align: 'center' });
+  txt('venmo', px + 20, y, { style: 'bold', size: 15, color: [0, 140, 255] });
+  px += vW + gap; line(px, y - 12, px, y + 3); px += gap;
+  txt(s.venmoNum || '', px, y, { size: 10.5 });
+  y += 20;
+  txt(s.payTerms || '', ccx, y, { style: 'italic', size: 10, color: OLIVE_SOFT, align: 'center' });
+  y += 22;
+
+  /* ---------- Footer ---------- */
+  line(lx, y, ccx - 40, y); line(ccx + 40, y, lx + CW, y);
+  doc.setDrawColor(142, 154, 107); doc.setLineWidth(0.9);
+  doc.lines([[10, -2, 22, -5, 34, -9]], ccx - 17, y + 3);
+  doc.lines([[2, -4, 6, -5, 8, -4]], ccx - 10, y + 1);
+  doc.lines([[2, -4, 6, -5, 8, -4]], ccx - 3, y - 1);
+  doc.lines([[2, -4, 6, -5, 8, -4]], ccx + 4, y - 3);
+  y += 26;
+  txt('Thank you', ccx, y, { font: 'times', style: 'italic', size: 28, color: TAN, align: 'center' });
+  y += 17;
+  var fl = String(s.footText || '').split('\n');
+  for (var f = 0; f < fl.length; f++) {
+    txt(fl[f].toUpperCase(), ccx, y, { size: 8, color: OLIVE, align: 'center', spacing: 1.6 });
+    y += 13;
+  }
+
+  return { doc: doc, total: total };
+}
+</script>
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var itemsEl = $('items'), totalEl = $('total'), toastEl = $('toast'), listEl = $('list');
+
+  var K_DRAFT = 'sfg.draft.v2', K_HIST = 'sfg.history.v2', K_BIZ = 'sfg.business.v2';
+  var BIZ = ['bizName','bizSub','bizMotto','zelleNum','venmoNum','payLead','payTerms','footText'];
+  var INV = ['clientName','clientDetails','invNum','invDate','svcDate','dueDate'];
+
+  /* ---------- storage ---------- */
+  var storeOK = (function(){
+    try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); return true; }
+    catch(e){ return false; }
+  })();
+  function load(k, fb){ if(!storeOK) return fb; try { var r = localStorage.getItem(k); return r ? JSON.parse(r) : fb; } catch(e){ return fb; } }
+  function save(k, v){ if(!storeOK) return false; try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch(e){ return false; } }
+
+  /* ---------- helpers ---------- */
+  var toastTimer;
+  function toast(msg, ms){
+    toastEl.textContent = msg; toastEl.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, ms || 2200);
+  }
+  function money(n){ return '$' + (Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function pad(n){ n = String(n); return n.length < 2 ? '0'+n : n; }
+  function isoToday(){ var d = new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+  function longDate(iso){
+    if(!iso) return '';
+    var m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if(!m) return iso; // already free text
+    var d = new Date(+m[1], +m[2]-1, +m[3]);
+    return d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  /* ---------- line items ---------- */
+  function itemHTML(d, n){
+    d = d || {};
+    return '<div class="item-top"><b>Service '+n+'</b></div>' +
+      '<label>What was done</label>' +
+      '<input class="i-title" type="text" autocapitalize="words" placeholder="Deep clean" value="'+esc(d.title)+'">' +
+      '<div class="row2">' +
+        '<div><label>Date</label><input class="i-date" type="date" value="'+esc(d.date)+'"></div>' +
+        '<div><label>Amount</label><div class="amount-wrap"><span>$</span>' +
+          '<input class="i-amount" type="number" inputmode="decimal" step="0.01" min="0" placeholder="0.00" value="'+esc(d.amount)+'"></div></div>' +
+      '</div>' +
+      '<label>Note (optional)</label>' +
+      '<input class="i-note" type="text" placeholder="Anything the client should know" value="'+esc(d.note)+'">' +
+      '<button type="button" class="remove">Remove this service</button>';
+  }
+  function renumber(){
+    var its = itemsEl.querySelectorAll('.item');
+    for(var i=0;i<its.length;i++){ its[i].querySelector('.item-top b').textContent = 'Service ' + (i+1); }
+    var btns = itemsEl.querySelectorAll('.remove');
+    for(var j=0;j<btns.length;j++){ btns[j].style.display = its.length > 1 ? '' : 'none'; }
+  }
+  function addItem(d, focus){
+    var el = document.createElement('div');
+    el.className = 'item';
+    el.innerHTML = itemHTML(d, itemsEl.children.length + 1);
+    itemsEl.appendChild(el);
+    renumber();
+    if(focus){ el.querySelector('.i-title').focus(); el.scrollIntoView({behavior:'smooth',block:'center'}); }
+    recalc();
+    return el;
+  }
+  itemsEl.addEventListener('click', function(e){
+    var btn = e.target.closest('.remove'); if(!btn) return;
+    if(itemsEl.children.length > 1){ btn.closest('.item').remove(); renumber(); recalc(); saveDraft(); toast('Removed'); }
+  });
+  function recalc(){
+    var sum = 0, f = itemsEl.querySelectorAll('.i-amount');
+    for(var i=0;i<f.length;i++){ sum += Number(f[i].value) || 0; }
+    totalEl.textContent = money(sum);
+    return sum;
+  }
+
+  /* ---------- state ---------- */
+  function readItems(){
+    var out = [], its = itemsEl.querySelectorAll('.item');
+    for(var i=0;i<its.length;i++){
+      out.push({
+        title: its[i].querySelector('.i-title').value.trim(),
+        date:  its[i].querySelector('.i-date').value,
+        note:  its[i].querySelector('.i-note').value.trim(),
+        amount: Number(its[i].querySelector('.i-amount').value) || 0
+      });
+    }
+    return out;
+  }
+  function readInvoice(){
+    var s = {items: readItems()};
+    INV.forEach(function(id){ s[id] = $(id).value; });
+    return s;
+  }
+  function readBiz(){ var b = {}; BIZ.forEach(function(id){ b[id] = $(id).value; }); return b; }
+  function applyInvoice(s){
+    INV.forEach(function(id){ if(typeof s[id] === 'string') $(id).value = s[id]; });
+    itemsEl.innerHTML = '';
+    (s.items && s.items.length ? s.items : [{}]).forEach(function(d){ addItem(d,false); });
+    recalc();
+  }
+  function applyBiz(b){ if(!b) return; BIZ.forEach(function(id){ if(typeof b[id] === 'string') $(id).value = b[id]; }); }
+
+  var draftTimer;
+  function saveDraft(){
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(function(){ save(K_DRAFT, readInvoice()); save(K_BIZ, readBiz()); }, 300);
+  }
+
+  /* ---------- invoice number ---------- */
+  function nextNumber(){
+    var d = new Date(), stamp = pad(d.getMonth()+1)+pad(d.getDate())+pad(d.getFullYear()%100), seq = 1;
+    load(K_HIST, []).forEach(function(r){
+      var m = String(r.id||'').match(/^SFG-(\d{6})-(\d+)$/);
+      if(m && m[1] === stamp) seq = Math.max(seq, parseInt(m[2],10)+1);
+    });
+    return 'SFG-'+stamp+'-'+pad(seq);
+  }
+
+  /* ---------- history ---------- */
+  function history(){ var l = load(K_HIST, []); return Array.isArray(l) ? l : []; }
+  function saveToHistory(inv, total){
+    var list = history(), id = (inv.invNum||'').trim() || ('draft-'+Date.now());
+    var rec = {id:id, savedAt:Date.now(), total:total, data:inv};
+    var found = false;
+    for(var i=0;i<list.length;i++){ if(list[i].id === id){ list[i] = rec; found = true; break; } }
+    if(!found) list.unshift(rec);
+    list.sort(function(a,b){ return b.savedAt - a.savedAt; });
+    save(K_HIST, list.slice(0,200));
+  }
+  function renderHistory(){
+    var list = history();
+    if(!storeOK){ listEl.innerHTML = '<div class="empty">This browser is not letting the app remember invoices. Open it from its web address in Safari or Chrome.</div>'; return; }
+    if(!list.length){ listEl.innerHTML = '<div class="empty">No invoices yet.<br>Create a PDF and it will show up here.</div>'; return; }
+    var h = '';
+    list.forEach(function(r, i){
+      var d = r.data || {};
+      h += '<div class="rec" data-i="'+i+'">' +
+        '<div class="rec-main" data-act="load">' +
+          '<div class="rec-name">'+esc(d.clientName || 'No client name')+'</div>' +
+          '<div class="rec-sub">'+esc(d.invNum||'')+' &middot; '+esc(longDate(d.invDate))+'</div>' +
+        '</div>' +
+        '<div class="rec-amt">'+money(r.total)+'</div>' +
+        '<button type="button" class="rec-del" data-act="del" aria-label="Delete">&times;</button>' +
+      '</div>';
+    });
+    listEl.innerHTML = h;
+  }
+  listEl.addEventListener('click', function(e){
+    var hit = e.target.closest('[data-act]'); if(!hit) return;
+    var row = hit.closest('.rec'), i = parseInt(row.getAttribute('data-i'),10), list = history();
+    if(!list[i]) return;
+    if(hit.getAttribute('data-act') === 'del'){
+      if(row.getAttribute('data-armed')){ list.splice(i,1); save(K_HIST, list); renderHistory(); toast('Deleted'); }
+      else {
+        row.setAttribute('data-armed','1'); hit.textContent = 'Sure?'; hit.style.color = '#B4553F'; hit.style.borderColor = '#B4553F';
+        setTimeout(function(){ if(row.isConnected){ row.removeAttribute('data-armed'); hit.innerHTML='&times;'; hit.style.color=''; hit.style.borderColor=''; } }, 3500);
+      }
+      return;
+    }
+    applyInvoice(list[i].data); saveDraft(); closeSheet(); window.scrollTo({top:0,behavior:'smooth'}); toast('Loaded ' + (list[i].data.invNum||''));
+  });
+  function openSheet(){ renderHistory(); document.body.classList.add('sheet-open'); $('sheet').setAttribute('aria-hidden','false'); }
+  function closeSheet(){ document.body.classList.remove('sheet-open'); $('sheet').setAttribute('aria-hidden','true'); }
+  $('btnHistory').addEventListener('click', openSheet);
+  $('btnClose').addEventListener('click', closeSheet);
+  $('scrim').addEventListener('click', closeSheet);
+
+  /* ---------- new ---------- */
+  function startNew(){
+    applyInvoice({clientName:'', clientDetails:'', invNum:nextNumber(), invDate:isoToday(), svcDate:'See Below', dueDate:'Upon Receipt', items:[{date:isoToday()}]});
+    saveDraft(); window.scrollTo({top:0,behavior:'smooth'});
+  }
+  var newBtn = $('btnNew'), armed = false, armT;
+  newBtn.addEventListener('click', function(){
+    if(!armed){
+      armed = true; newBtn.textContent = 'Clear?'; newBtn.style.color = '#B4553F'; newBtn.style.borderColor = '#B4553F';
+      armT = setTimeout(function(){ armed = false; newBtn.textContent = 'New'; newBtn.style.color=''; newBtn.style.borderColor=''; }, 4000);
+      return;
+    }
+    clearTimeout(armT); armed = false; newBtn.textContent = 'New'; newBtn.style.color=''; newBtn.style.borderColor='';
+    startNew(); toast('New invoice started');
+  });
+
+  /* ---------- PDF ---------- */
+  function validate(inv){
+    if(!inv.clientName.trim()){ $('clientName').focus(); toast('Add the client name first'); return false; }
+    var hasAmount = inv.items.some(function(it){ return it.amount > 0; });
+    if(!hasAmount){ itemsEl.querySelector('.i-amount').focus(); toast('Add an amount for at least one service'); return false; }
+    return true;
+  }
+  function toPdfState(inv, biz){
+    var s = {};
+    BIZ.forEach(function(k){ s[k] = biz[k]; });
+    s.invNum = inv.invNum; s.invDate = longDate(inv.invDate);
+    s.svcDate = longDate(inv.svcDate); s.dueDate = longDate(inv.dueDate);
+    s.billTo = [inv.clientName.trim(), inv.clientDetails.trim()].filter(Boolean).join('\n');
+    s.items = inv.items.map(function(it){ return {title:it.title, date:longDate(it.date), note:it.note, amount:it.amount}; });
+    return s;
+  }
+  function safeName(inv){
+    var base = (inv.invNum||'invoice').replace(/[^\w.-]+/g,'-');
+    var who = (inv.clientName||'').trim().replace(/[^\w-]+/g,'-').replace(/^-|-$/g,'');
+    return 'Invoice-' + base + (who ? '-' + who : '') + '.pdf';
+  }
+  function deliver(blob, name){
+    var file = null;
+    try { file = new File([blob], name, {type:'application/pdf'}); } catch(e){}
+    if(file && navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+      return navigator.share({files:[file], title:name}).then(function(){ return 'shared'; }).catch(function(err){
+        if(err && err.name === 'AbortError') return 'cancelled';
+        return download(blob, name);
+      });
+    }
+    return Promise.resolve(download(blob, name));
+  }
+  function download(blob, name){
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = name; a.rel = 'noopener'; document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 4000);
+    return 'downloaded';
+  }
+  $('btnPdf').addEventListener('click', function(){
+    var inv = readInvoice(), biz = readBiz();
+    if(!validate(inv)) return;
+    if(typeof window.jspdf === 'undefined' || !window.jspdf.jsPDF){ toast('PDF engine failed to load. Reload the page.'); return; }
+    var btn = this; btn.disabled = true; btn.textContent = 'Creating…';
+    try {
+      var out = buildInvoicePdf(window.jspdf.jsPDF, toPdfState(inv, biz));
+      var blob = out.doc.output('blob');
+      saveToHistory(inv, out.total); save(K_BIZ, biz);
+      deliver(blob, safeName(inv)).then(function(how){
+        if(how === 'shared') toast('Sent');
+        else if(how === 'downloaded') toast('PDF saved to your downloads');
+      }).finally(function(){ btn.disabled = false; btn.textContent = 'Create PDF'; });
+    } catch(err){
+      console.error(err); btn.disabled = false; btn.textContent = 'Create PDF';
+      toast('Something went wrong making the PDF');
+    }
+  });
+
+  /* ---------- wiring ---------- */
+  $('btnAdd').addEventListener('click', function(){ addItem({date:isoToday()}, true); saveDraft(); });
+  document.addEventListener('input', function(e){
+    if(e.target.classList.contains('i-amount')) recalc();
+    saveDraft();
+  });
+
+  /* ---------- boot ---------- */
+  applyBiz(load(K_BIZ, null));
+  var draft = load(K_DRAFT, null);
+  if(draft && draft.items){ applyInvoice(draft); if(!draft.invNum) $('invNum').value = nextNumber(); }
+  else startNew();
+})();
+</script>
+</body>
+</html>

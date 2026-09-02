@@ -31,7 +31,7 @@ export default function DeepCleaningPage() {
       faq={[
         { question: 'Do I need a deep clean before starting recurring visits?', answer: 'Usually yes, for a first visit. If the home has been professionally cleaned within the last couple of months, a standard clean is often enough. Send photos and you will get an honest answer rather than an upsell.' },
         { question: 'How often should a Florida home get one?', answer: 'Every three to four months for most homes here. Closer to every ten weeks if you are near the water, have pets, or run the AC hard.' },
-        { question: 'Does it include inside the oven and fridge?', answer: 'Those are add-ons rather than standard, because plenty of people do not want them touched. Both are $35 in the estimate builder.' },
+        { question: 'Does it include inside the oven and fridge?', answer: 'Those are add-ons rather than standard, because plenty of people do not want them touched. Both are $45 in the estimate builder.' },
       ]}
       related={[
         { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: 'From $125' },
