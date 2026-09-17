@@ -34,7 +34,7 @@ export default function ResidentialCleaningPage() {
         { question: 'Do I keep the same cleaner?', answer: 'Always. Chelsea cleans every home personally, which is why the schedule is limited.' },
       ]}
       related={[
-        { href: '/deep-cleaning', icon: 'deep', title: 'Deep Cleaning', desc: 'Everything in a standard clean, then the parts that get skipped for months. This is the one that resets a house.', price: 'From $205' },
+        { href: '/deep-cleaning', icon: 'deep', title: 'Deep Cleaning', desc: 'Everything in a standard clean, plus the parts that get skipped for months. This is the one that resets a house.', price: 'From $205' },
         { href: '/home-organization', icon: 'organize', title: 'Home Organization', desc: 'Pantry, closet, garage, playroom. We sort, we purge, we give everything a home you will still be using in six months.', price: '$60 / hour' },
       ]}
     />

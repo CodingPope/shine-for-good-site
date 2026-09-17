@@ -5,9 +5,30 @@ import { track } from '@/lib/track'
 import { submitLead } from '@/lib/submitLead'
 
 const CFG = {
-  rate: 0.11, min: 125, bathExtra: 25, bedExtra: 18,
-  deepMult: 1.64, moveMult: 1.60, bizMult: 1.05, orgRate: 60,
+  rate: 0.11, min: 125, bathExtra: 25, bedExtra: 18, orgRate: 60,
   wk: 20, bi: 15, mo: 10, spread: 10, give: 10,
+}
+
+// What each clean costs relative to a standard visit. The order matters: a move-out
+// does deep-clean work and then opens every cabinet and appliance, so it has to sit
+// above a deep clean, and post-construction above that.
+const SVC_MULT: Record<string, number> = {
+  standard: 1, biz: 1.05, deep: 1.64, move: 2.45, post: 2.75,
+}
+
+// Floor per service. On a small home the multiplier alone is not enough: the bundled
+// extras are flat-priced, so without these a move-out could still land under a deep
+// clean with the fridge, oven and cabinets ticked on.
+const SVC_MIN: Record<string, number> = {
+  standard: CFG.min, biz: CFG.min, deep: 205, move: 335, post: 385,
+}
+
+// Add-ons a service already covers, so they are never billed twice. These mirror the
+// "what is included" list on each service page.
+const SVC_INCLUDES: Record<string, readonly string[]> = {
+  deep: ['base'],
+  move: ['fridge', 'oven', 'cab', 'base', 'windows', 'garage'],
+  post: ['base', 'windows'],
 }
 
 const ADDONS = [
@@ -36,6 +57,12 @@ const SVC_LABELS: Record<string, string> = {
   post: 'Post-construction clean',
 }
 
+// Short enough to sit on one line in the result card.
+const BASE_LABELS: Record<string, string> = {
+  standard: 'Base clean', deep: 'Deep clean base', move: 'Move-in / out base',
+  biz: 'Business clean base', post: 'Post-construction base',
+}
+
 const FREQ = [
   { id: 'once', label: 'One time' },
   { id: 'wk', label: 'Weekly' },
@@ -47,10 +74,15 @@ const FREQ_PCT: Record<string, number> = { wk: CFG.wk, bi: CFG.bi, mo: CFG.mo, o
 const FREQ_NAME: Record<string, string> = { once: 'one time', wk: 'every week', bi: 'every two weeks', mo: 'once a month' }
 
 const BED_OPTIONS = [1, 2, 3, 4, 5, 6]
-const BATH_OPTIONS = [1, 1.5, 2, 2.5, 3, 4]
+const BATH_OPTIONS = [1, 1.5, 2, 2.5, 3, 3.5, 4]
 
 function money(n: number) {
   return '$' + Math.round(n).toLocaleString('en-US')
+}
+
+function listPhrase(items: string[]) {
+  if (items.length < 2) return items[0] ?? ''
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`
 }
 
 interface PricingEstimatorProps {
@@ -82,8 +114,10 @@ export function PricingEstimator({
   const effectiveFreq = recurring ? freq : 'once'
 
   const result = useMemo(() => {
+    const included = SVC_INCLUDES[svc] ?? []
+    const billed = addons.filter(id => !included.includes(id))
     let base: number
-    let baseLab = 'Base clean'
+    let baseLab = BASE_LABELS[svc] ?? 'Base clean'
     let forLine: string
 
     if (svc === 'organize') {
@@ -91,20 +125,16 @@ export function PricingEstimator({
       base = hours * CFG.orgRate
       baseLab = `${hours} hours at ${money(CFG.orgRate)}/hr`
       forLine = `Home organization, roughly ${hours} hours`
-    } else if (svc === 'post') {
-      base = Math.max(CFG.min * 2, sqft * CFG.rate * CFG.deepMult * 1.2)
-      forLine = 'Post-construction clean, one time'
     } else {
       base = Math.max(CFG.min, sqft * CFG.rate)
       base += Math.max(0, bath - 2) * CFG.bathExtra
       base += Math.max(0, bed - 3) * CFG.bedExtra
-      if (svc === 'deep') base *= CFG.deepMult
-      if (svc === 'move') base *= CFG.moveMult
-      if (svc === 'biz') base *= CFG.bizMult
+      base *= SVC_MULT[svc] ?? 1
+      base = Math.max(SVC_MIN[svc] ?? CFG.min, base)
       forLine = SVC_LABELS[svc] + (effectiveFreq === 'once' ? ', one time' : `, ${FREQ_NAME[effectiveFreq]}`)
     }
 
-    const addTotal = addons.reduce((s, id) => s + (ADDONS.find(a => a.id === id)?.price ?? 0), 0)
+    const addTotal = billed.reduce((s, id) => s + (ADDONS.find(a => a.id === id)?.price ?? 0), 0)
     const sub = base + addTotal
     const pct = FREQ_PCT[effectiveFreq] ?? 0
     const discount = sub * (pct / 100)
@@ -112,8 +142,10 @@ export function PricingEstimator({
     const lo = Math.round((total * (1 - CFG.spread / 100)) / 5) * 5
     const hi = Math.round((total * (1 + CFG.spread / 100)) / 5) * 5
     const give = Math.max(1, Math.round(total * (CFG.give / 100)))
+    const includedNames = included.map(id => ADDONS.find(a => a.id === id)?.name).filter(Boolean) as string[]
+    const billedNames = billed.map(id => ADDONS.find(a => a.id === id)?.name).filter(Boolean) as string[]
 
-    return { base, baseLab, forLine, addTotal, discount, pct, lo, hi, give }
+    return { base, baseLab, forLine, addTotal, discount, pct, lo, hi, give, included, includedNames, billedNames }
   }, [svc, sqft, bed, bath, effectiveFreq, addons])
 
   const toggleAddon = (id: string) => {
@@ -121,16 +153,16 @@ export function PricingEstimator({
   }
 
   const summary = () => {
-    const names = addons.map(id => ADDONS.find(a => a.id === id)?.name).filter(Boolean)
     const lines = [
       'Quote request from the Shine for Good site', '',
       `Name: ${qName || '-'}`,
       `Phone: ${qPhone || '-'}`,
-      `Where: ${qAddr || '-'}`,
-      ...(qEmail ? [`Email: ${qEmail}`] : []), '',
+      `Email: ${qEmail || '-'}`,
+      `Where: ${qAddr || '-'}`, '',
       `Service: ${result.forLine}`,
       `Size: ${sqft.toLocaleString('en-US')} sq ft, ${bed} bd / ${bath} ba`,
-      `Add-ons: ${names.length ? names.join(', ') : 'none'}`,
+      ...(result.includedNames.length ? [`Already included: ${result.includedNames.join(', ')}`] : []),
+      `Add-ons: ${result.billedNames.length ? result.billedNames.join(', ') : 'none'}`,
       `Site estimate: ${money(result.lo)} to ${money(result.hi)}`, '',
     ]
     if (qNote) lines.push(`Notes: ${qNote}`)
@@ -251,15 +283,29 @@ export function PricingEstimator({
 
             <div className="field">
               <div className="field-top"><span className="field-lab">{num()} &middot; Add anything on</span></div>
+              {result.includedNames.length > 0 && (
+                <p className="addon-note">
+                  A {SVC_LABELS[svc]?.toLowerCase() ?? 'clean'} already covers {listPhrase(result.includedNames.map(n => n.toLowerCase()))}. Those are in the price below, not extra.
+                </p>
+              )}
               <div className="addons">
                 {ADDONS.map(a => {
-                  const on = addons.includes(a.id)
+                  const inc = result.included.includes(a.id)
+                  const on = inc || addons.includes(a.id)
                   return (
-                    <button key={a.id} type="button" className={`addon${on ? ' is-on' : ''}`} aria-pressed={on} onClick={() => toggleAddon(a.id)}>
+                    <button
+                      key={a.id}
+                      type="button"
+                      className={`addon${on ? ' is-on' : ''}${inc ? ' is-inc' : ''}`}
+                      aria-pressed={on}
+                      disabled={inc}
+                      title={inc ? 'Already included in this clean' : undefined}
+                      onClick={() => toggleAddon(a.id)}
+                    >
                       <span style={{ display: 'flex', alignItems: 'center', gap: '.6rem' }}>
                         <span className="box" />{a.name}
                       </span>
-                      <i>+{money(a.price)}</i>
+                      <i>{inc ? 'Included' : `+${money(a.price)}`}</i>
                     </button>
                   )
                 })}
@@ -274,6 +320,9 @@ export function PricingEstimator({
               <p className="res-for">{result.forLine}</p>
               <div className="res-rule" />
               <div className="res-row"><span>{result.baseLab}</span><b>{money(result.base)}</b></div>
+              {result.includedNames.length > 0 && (
+                <div className="res-row"><span>Includes {listPhrase(result.includedNames.map(n => n.toLowerCase()))}</span><b>Included</b></div>
+              )}
               {result.addTotal > 0 && (
                 <div className="res-row"><span>Add-ons</span><b>{money(result.addTotal)}</b></div>
               )}

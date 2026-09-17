@@ -22,6 +22,7 @@ export interface ServiceDetailPageProps {
   priceCtaHref: string
   priceCtaLabel: string
   paragraphs: string[]
+  includedIntro?: string
   included: string[]
   faqHeading: string
   faq: AccordionItem[]
@@ -30,7 +31,7 @@ export interface ServiceDetailPageProps {
 
 export async function ServiceDetailPage({
   crumbLabel, eyebrow, title, lede, price, priceSub, priceCtaHref, priceCtaLabel,
-  paragraphs, included, faqHeading, faq, related,
+  paragraphs, includedIntro, included, faqHeading, faq, related,
 }: ServiceDetailPageProps) {
   const { phone, areas } = await getSiteSettings()
   const phoneDigits = phone.replace(/\D/g, '')
@@ -71,6 +72,7 @@ export async function ServiceDetailPage({
           <div className="rv rv-d2">
             {paragraphs.map((p, i) => <p key={i} className="lede" style={{ marginBottom: '1.2rem' }}>{p}</p>)}
             <p className="eyebrow" style={{ margin: '2.6rem 0 1.2rem' }}>What is included</p>
+            {includedIntro && <p className="incl-intro">{includedIntro}</p>}
             <ul className="incl">
               {included.map(item => <li key={item}>{item}</li>)}
             </ul>

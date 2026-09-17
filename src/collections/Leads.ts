@@ -1,6 +1,8 @@
 import type { CollectionConfig } from 'payload'
 import { notifyOwnerNewLead, sendCustomerReceipt } from '../lib/emails'
 
+const EMAIL_RE = /^[^@\s]+@[^@\s.]+\.[^@\s]+$/
+
 export const Leads: CollectionConfig = {
   slug: 'leads',
   labels: { singular: 'Lead', plural: 'Leads' },
@@ -114,6 +116,24 @@ export const Leads: CollectionConfig = {
     },
   ],
   hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (!data) return data
+        const typed = typeof data.email === 'string' ? data.email.trim() : ''
+        if (!typed) return data
+        // A typo'd address used to fail the email field's validation, which rejected
+        // the whole submission — the visitor saw nothing and the lead was gone. Keep
+        // what they typed in the summary so it can still be chased down.
+        if (!EMAIL_RE.test(typed)) {
+          data.email = null
+          data.summary = [data.summary, `Email as typed (not a valid address): ${typed}`]
+            .filter(Boolean).join('\n\n')
+        } else {
+          data.email = typed
+        }
+        return data
+      },
+    ],
     beforeChange: [
       ({ data, originalDoc }) => {
         if (!originalDoc || data.status !== originalDoc.status) {
