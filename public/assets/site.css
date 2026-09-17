@@ -281,6 +281,7 @@ section[id],header[id]{scroll-margin-top:86px}
 .svc-inner{padding:0 0 clamp(2rem,4vw,2.8rem);display:grid;grid-template-columns:1fr 1.25fr;gap:clamp(1.6rem,4vw,3.4rem)}
 .svc-inner p{margin:0;font-family:var(--f-display);font-size:1.18rem;line-height:1.6;color:var(--ink-soft)}
 .svc-tag{display:inline-block;margin-top:1.2rem;font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-text);border:1px solid var(--gold-text);padding:.5em 1em;border-radius:2px}
+.incl-intro{font-size:.92rem;line-height:1.6;color:var(--ink);margin:0 0 1rem}
 .incl{list-style:none;margin:0;padding:0;columns:2;column-gap:2.4rem}
 .incl li{position:relative;padding-left:1.5rem;margin-bottom:.62rem;font-size:.88rem;line-height:1.55;break-inside:avoid;color:var(--ink-soft)}
 .incl li::before{
@@ -354,6 +355,10 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;bac
 .addon .box{width:13px;height:13px;border:1px solid var(--line);flex:none;position:relative;border-radius:1px}
 .addon.is-on .box{background:var(--moss);border-color:var(--moss)}
 .addon.is-on .box::after{content:"";position:absolute;left:3px;top:1px;width:5px;height:8px;border-right:1.5px solid var(--paper);border-bottom:1.5px solid var(--paper);transform:rotate(42deg)}
+.addon.is-inc{cursor:default;opacity:.85}
+.addon.is-inc:hover{border-color:var(--moss)}
+.addon.is-inc i{color:var(--moss)}
+.addon-note{font-size:.78rem;line-height:1.6;color:var(--ink-soft);margin:-.35rem 0 .85rem}
 
 /* the result card — watercolor bloom, no hard box */
 .result{position:sticky;top:96px}

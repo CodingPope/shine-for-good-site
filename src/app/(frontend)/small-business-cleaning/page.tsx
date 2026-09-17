@@ -34,7 +34,7 @@ export default function SmallBusinessCleaningPage() {
       ]}
       related={[
         { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: 'From $125' },
-        { href: '/deep-cleaning', icon: 'deep', title: 'Deep Cleaning', desc: 'Everything in a standard clean, then the parts that get skipped for months. This is the one that resets a house.', price: 'From $205' },
+        { href: '/deep-cleaning', icon: 'deep', title: 'Deep Cleaning', desc: 'Everything in a standard clean, plus the parts that get skipped for months. This is the one that resets a house.', price: 'From $205' },
       ]}
     />
   )

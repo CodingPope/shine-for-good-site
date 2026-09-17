@@ -3,7 +3,7 @@ import { ServiceDetailPage } from '@/components/ServiceDetailPage'
 
 export const metadata: Metadata = {
   title: 'Move-In / Move-Out Cleaning in St. Pete & Tampa',
-  description: 'Move-in and move-out cleaning in St. Petersburg and Tampa. Inside cabinets, oven, fridge, closets and floors. From $200.',
+  description: 'Move-in and move-out cleaning in St. Petersburg and Tampa. Inside the cabinets, oven and fridge included, not billed as extras. From $335.',
 }
 
 export default function MoveInMoveOutPage() {
@@ -12,8 +12,8 @@ export default function MoveInMoveOutPage() {
       crumbLabel="Move-In / Move-Out"
       eyebrow="For empty houses"
       title="Move-in and move-out cleaning"
-      lede="For the day the house is empty and every mark is visible. Landlords, buyers and inspectors all look at the same places, and so do we."
-      price="From $200"
+      lede="Everything in a standard clean and a deep clean, plus every cabinet, drawer and appliance opened up. For the day the house is empty and every mark is visible."
+      price="From $335"
       priceSub="Final price depends on your space and what it needs. Fill out the form and Chelsea will get back to you with a custom quote."
       priceCtaHref="/pricing"
       priceCtaLabel="Request a quote"
@@ -21,6 +21,7 @@ export default function MoveInMoveOutPage() {
         'Deposits are rarely lost over big things. They are lost over the oven, the fridge seal, and the tops of the door frames, because those are the places a walkthrough always checks and a normal clean always skips.',
         'This clean is built backwards from the inspection. If a property manager in Pinellas or Hillsborough is going to open it, pull it out, or run a finger along it, it is on the list.',
       ]}
+      includedIntro="Everything in a standard clean and everything in a deep clean, plus:"
       included={[
         'Inside every cabinet and drawer', 'Inside the refrigerator', 'Inside the oven',
         'Closets, shelves and rods', 'Appliance exteriors and sides', 'Wall spot cleaning',
@@ -29,12 +30,13 @@ export default function MoveInMoveOutPage() {
       ]}
       faqHeading="About move-in / move-out."
       faq={[
+        { question: 'Are the fridge, oven and cabinets extra?', answer: 'No. On a move-in or move-out clean they are part of the job and part of the quoted price, because a walkthrough always opens them. They only show up as paid add-ons if you book a standard or deep clean instead.' },
         { question: 'Will this get my deposit back?', answer: 'It removes cleaning as a reason to withhold it. Repairs, damage, and unpaid rent are separate matters and no cleaner can help with those.' },
         { question: 'Can you do it same week?', answer: 'Often yes. Move-outs are the easiest thing to fit into a gap, so it is always worth asking even on short notice.' },
         { question: 'Do you clean carpets?', answer: 'Not steam cleaning, no. Carpets are vacuumed thoroughly and I can point you to a local company for extraction if your lease requires it.' },
       ]}
       related={[
-        { href: '/deep-cleaning', icon: 'deep', title: 'Deep Cleaning', desc: 'Everything in a standard clean, then the parts that get skipped for months. This is the one that resets a house.', price: 'From $205' },
+        { href: '/deep-cleaning', icon: 'deep', title: 'Deep Cleaning', desc: 'Everything in a standard clean, plus the parts that get skipped for months. This is the one that resets a house.', price: 'From $205' },
         { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: 'From $125' },
       ]}
     />

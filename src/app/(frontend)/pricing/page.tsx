@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export const revalidate = 60
 
 const FALLBACK_FAQS: AccordionItem[] = [
-  { question: 'How much does house cleaning cost in St. Pete and Tampa?', answer: 'A standard clean starts from $125 for a small studio. A deep clean starts from $205. Square footage, bathroom count and the current condition of the home move the number. Fill out the quote builder and Chelsea will reach out with a custom price.' },
+  { question: 'How much does house cleaning cost in St. Pete and Tampa?', answer: 'A standard clean starts from $125 for a small studio. A deep clean starts from $205, and a move-in or move-out clean from $335 with the fridge, oven and cabinets already included. Square footage, bathroom count and the current condition of the home move the number. Fill out the quote builder and Chelsea will reach out with a custom price.' },
   { question: 'How do I pay?', answer: 'Venmo, Zelle or cash, due on the day of service.' },
   { question: 'How far ahead do I need to book?', answer: 'One to two weeks is typical for a first deep clean. Recurring visits get a standing day and time so you never have to think about it again. Move-out cleans can sometimes be fit in within a few days, so it is always worth asking.' },
   { question: 'What if something is not right?', answer: 'Send a text within 24 hours and that area gets re-cleaned at no charge. No forms, no argument, no awkward conversation.' },
@@ -69,7 +69,8 @@ export default async function PricingPage() {
           <div className="steps rv">
             <div className="step"><div><h3>Base rate by size</h3><p>Charged per square foot with a minimum, because a 700 square foot condo still takes a full setup and pack-down.</p></div></div>
             <div className="step"><div><h3>Rooms that take real time</h3><p>Bathrooms past two and bedrooms past three add to the base. These are the rooms that actually change how long a visit runs.</p></div></div>
-            <div className="step"><div><h3>Depth of clean</h3><p>A deep clean runs about one and a half times a standard visit. A move-out runs a little higher again, because every cabinet and appliance gets opened.</p></div></div>
+            <div className="step"><div><h3>Depth of clean</h3><p>A deep clean runs about one and two thirds of a standard visit. A move-in or move-out runs higher again, because it does all of that and then opens every cabinet, drawer and appliance. Post-construction is the heaviest of the three.</p></div></div>
+            <div className="step"><div><h3>What is already in the price</h3><p>A move-in or move-out clean has the fridge, oven, inside the cabinets, interior windows, baseboards and the garage built into it, so those never appear as paid add-ons. A deep clean has baseboards by hand built in. You only pay for an extra when it is genuinely extra.</p></div></div>
             <div className="step"><div><h3>Frequency discount</h3><p>Weekly, biweekly and monthly clients pay less per visit. That is not a promotion, it is just what a maintained home costs to clean.</p></div></div>
             <div className="step"><div><h3>Ten percent, off the top</h3><p>Whatever the final number is, a tenth of it is already committed to adults with disabilities in Tampa Bay before anything else comes out.</p></div></div>
           </div>

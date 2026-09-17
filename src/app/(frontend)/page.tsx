@@ -74,9 +74,9 @@ export default async function HomePage() {
           <div className="cards">
             {[
               { href: '/residential-cleaning', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled.', price: 'From $125' },
-              { href: '/deep-cleaning', title: 'Deep Cleaning', desc: 'Everything in a standard clean, then the parts that get skipped for months.', price: 'From $205' },
+              { href: '/deep-cleaning', title: 'Deep Cleaning', desc: 'Everything in a standard clean, plus the parts that get skipped for months.', price: 'From $205' },
               { href: '/home-organization', title: 'Home Organization', desc: 'Pantry, closet, garage, playroom. A system you can actually keep.', price: '$60 / hour' },
-              { href: '/move-in-move-out', title: 'Move-In / Move-Out', desc: 'For the day the house is empty and every mark is visible.', price: 'From $200' },
+              { href: '/move-in-move-out', title: 'Move-In / Move-Out', desc: 'For the day the house is empty and every mark is visible.', price: 'From $335' },
               { href: '/small-business-cleaning', title: 'Small Businesses', desc: 'Offices, salons, studios and shops. Cleaned around your hours.', price: 'Custom quote' },
             ].map(s => (
               <Link key={s.href} className="card rv" href={s.href}>
