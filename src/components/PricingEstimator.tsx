@@ -24,11 +24,13 @@ const SVC_MIN: Record<string, number> = {
 }
 
 // Add-ons a service already covers, so they are never billed twice. These mirror the
-// "what is included" list on each service page.
+// "what is included" list on each service page. Baseboards by hand is never included
+// here — Chelsea treats it as a standalone add-on on every service, including move-out,
+// and asks the customer directly rather than bundling it. Baseboard dusting (the
+// included-for-free version) isn't in ADDONS at all, so it never needs listing here.
 const SVC_INCLUDES: Record<string, readonly string[]> = {
-  deep: ['base'],
-  move: ['fridge', 'oven', 'cab', 'base', 'windows', 'garage'],
-  post: ['base', 'windows'],
+  move: ['fridge', 'oven', 'cab', 'windows', 'garage'],
+  post: ['windows'],
 }
 
 const ADDONS = [
