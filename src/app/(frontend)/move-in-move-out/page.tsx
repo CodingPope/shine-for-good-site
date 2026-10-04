@@ -25,7 +25,7 @@ export default function MoveInMoveOutPage() {
       included={[
         'Inside every cabinet and drawer', 'Inside the refrigerator', 'Inside the oven',
         'Closets, shelves and rods', 'Appliance exteriors and sides', 'Wall spot cleaning',
-        'Baseboards and trim', 'Windows inside, sills and tracks', 'Light fixtures and fans',
+        'Windows inside, sills and tracks', 'Light fixtures and fans',
         'Garage sweep out', 'Floors detailed edge to edge', 'Final walkthrough with you',
       ]}
       faqHeading="About move-in / move-out."
