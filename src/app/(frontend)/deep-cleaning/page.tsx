@@ -23,7 +23,7 @@ export default function DeepCleaningPage() {
       ]}
       includedIntro="Everything in a standard clean, plus:"
       included={[
-        'Baseboards hand wiped', 'Door frames and door tops',
+        'Baseboards dusted', 'Door frames and door tops',
         'Window sills and tracks', 'Blinds dusted slat by slat', 'Cabinet fronts degreased',
         'Backsplash grout scrubbed', 'Shower grout and hard water buildup', 'Behind and under movable furniture',
         'Vents and returns dusted', 'Light switch plates detailed', 'Trim, corners and cobwebs',

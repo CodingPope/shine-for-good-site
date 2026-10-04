@@ -35,7 +35,7 @@ const ADDONS = [
   { id: 'fridge', name: 'Inside the fridge', price: 45 },
   { id: 'oven', name: 'Inside the oven', price: 45 },
   { id: 'windows', name: 'Interior windows', price: 45 },
-  { id: 'base', name: 'Baseboards by hand', price: 30 },
+  { id: 'base', name: 'Baseboards by hand', price: 50, unit: '/hour' },
   { id: 'cab', name: 'Inside cabinets', price: 40 },
   { id: 'laundry', name: 'Wash and fold', price: 25 },
   { id: 'pet', name: 'Heavy pet hair', price: 25 },
@@ -305,7 +305,7 @@ export function PricingEstimator({
                       <span style={{ display: 'flex', alignItems: 'center', gap: '.6rem' }}>
                         <span className="box" />{a.name}
                       </span>
-                      <i>{inc ? 'Included' : `+${money(a.price)}`}</i>
+                      <i>{inc ? 'Included' : `+${money(a.price)}${'unit' in a ? a.unit : ''}`}</i>
                     </button>
                   )
                 })}
