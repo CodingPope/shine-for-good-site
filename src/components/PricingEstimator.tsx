@@ -5,8 +5,8 @@ import { track } from '@/lib/track'
 import { submitLead } from '@/lib/submitLead'
 
 const CFG = {
-  rate: 0.11, min: 125, bathExtra: 25, bedExtra: 18, orgRate: 60,
-  wk: 20, bi: 15, mo: 10, spread: 10, give: 10,
+  rate: 0.11, min: 125, bathExtra: 50, bedExtra: 30, orgRate: 60,
+  wk: 20, bi: 15, mo: 10, conditionAllowance: 10, orgSpread: 10, give: 10,
 }
 
 // What each clean costs relative to a standard visit. The order matters: a move-out
@@ -121,6 +121,8 @@ export function PricingEstimator({
     let base: number
     let baseLab = BASE_LABELS[svc] ?? 'Base clean'
     let forLine: string
+    let bathroomTotal = 0
+    let bedroomTotal = 0
 
     if (svc === 'organize') {
       const hours = Math.max(2, Math.min(10, Math.round(sqft / 450)))
@@ -128,26 +130,26 @@ export function PricingEstimator({
       baseLab = `${hours} hours at ${money(CFG.orgRate)}/hr`
       forLine = `Home organization, roughly ${hours} hours`
     } else {
-      base = Math.max(CFG.min, sqft * CFG.rate)
-      base += Math.max(0, bath - 2) * CFG.bathExtra
-      base += Math.max(0, bed - 3) * CFG.bedExtra
-      base *= SVC_MULT[svc] ?? 1
+      base = Math.max(CFG.min, sqft * CFG.rate) * (SVC_MULT[svc] ?? 1)
       base = Math.max(SVC_MIN[svc] ?? CFG.min, base)
-      forLine = SVC_LABELS[svc] + (effectiveFreq === 'once' ? ', one time' : `, ${FREQ_NAME[effectiveFreq]}`)
+      bathroomTotal = Math.max(0, bath - 1) * CFG.bathExtra
+      bedroomTotal = bed * CFG.bedExtra
+      forLine = SVC_LABELS[svc]
+        + (effectiveFreq === 'once' ? ', one time' : `, ${FREQ_NAME[effectiveFreq]}`)
     }
 
     const addTotal = billed.reduce((s, id) => s + (ADDONS.find(a => a.id === id)?.price ?? 0), 0)
-    const sub = base + addTotal
+    const sub = base + bathroomTotal + bedroomTotal + addTotal
     const pct = FREQ_PCT[effectiveFreq] ?? 0
     const discount = sub * (pct / 100)
     const total = sub - discount
-    const lo = Math.round((total * (1 - CFG.spread / 100)) / 5) * 5
-    const hi = Math.round((total * (1 + CFG.spread / 100)) / 5) * 5
+    const lo = Math.round((svc === 'organize' ? total * (1 - CFG.orgSpread / 100) : total) / 5) * 5
+    const hi = Math.round((total * (1 + (svc === 'organize' ? CFG.orgSpread : CFG.conditionAllowance) / 100)) / 5) * 5
     const give = Math.max(1, Math.round(total * (CFG.give / 100)))
     const includedNames = included.map(id => ADDONS.find(a => a.id === id)?.name).filter(Boolean) as string[]
     const billedNames = billed.map(id => ADDONS.find(a => a.id === id)?.name).filter(Boolean) as string[]
 
-    return { base, baseLab, forLine, addTotal, discount, pct, lo, hi, give, included, includedNames, billedNames }
+    return { base, baseLab, forLine, addTotal, discount, pct, lo, hi, give, included, includedNames, billedNames, bathroomTotal, bedroomTotal }
   }, [svc, sqft, bed, bath, effectiveFreq, addons])
 
   const toggleAddon = (id: string) => {
@@ -163,6 +165,7 @@ export function PricingEstimator({
       `Where: ${qAddr || '-'}`, '',
       `Service: ${result.forLine}`,
       `Size: ${sqft.toLocaleString('en-US')} sq ft, ${bed} bd / ${bath} ba`,
+      ...(svc !== 'organize' ? ['Estimate range accounts for home condition, from good condition to extra scrubbing.'] : []),
       ...(result.includedNames.length ? [`Already included: ${result.includedNames.join(', ')}`] : []),
       `Add-ons: ${result.billedNames.length ? result.billedNames.join(', ') : 'none'}`,
       `Site estimate: ${money(result.lo)} to ${money(result.hi)}`, '',
@@ -319,9 +322,16 @@ export function PricingEstimator({
             <div className="bloom">
               <p className="res-lab">Request a quote</p>
               <p className="res-range">{money(result.lo)} <span className="to">to</span> {money(result.hi)}</p>
+              {svc !== 'organize' && <p className="res-fine" style={{ marginTop: '.3rem' }}>Lower end: good condition · Upper end: extra scrubbing</p>}
               <p className="res-for">{result.forLine}</p>
               <div className="res-rule" />
               <div className="res-row"><span>{result.baseLab}</span><b>{money(result.base)}</b></div>
+              {result.bathroomTotal > 0 && (
+                <div className="res-row"><span>Additional bathrooms ({bath - 1} × {money(CFG.bathExtra)})</span><b>{money(result.bathroomTotal)}</b></div>
+              )}
+              {result.bedroomTotal > 0 && (
+                <div className="res-row"><span>Bedrooms ({bed} × {money(CFG.bedExtra)})</span><b>{money(result.bedroomTotal)}</b></div>
+              )}
               {result.includedNames.length > 0 && (
                 <div className="res-row"><span>Includes {listPhrase(result.includedNames.map(n => n.toLowerCase()))}</span><b>Included</b></div>
               )}
