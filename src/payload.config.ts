@@ -18,6 +18,7 @@ import { FAQs } from './collections/FAQs'
 import { Policies } from './collections/Policies'
 import { SiteSettings } from './globals/SiteSettings'
 import { GivingBack } from './globals/GivingBack'
+import { Pricing } from './globals/Pricing'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -33,7 +34,7 @@ export default buildConfig({
     },
     livePreview: {
       collections: ['journal-posts', 'before-after', 'work-gallery'],
-      globals: ['site-settings', 'giving-back'],
+      globals: ['site-settings', 'pricing', 'giving-back'],
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
         { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
@@ -49,6 +50,9 @@ export default buildConfig({
         if (globalConfig?.slug === 'site-settings') {
           return `${serverURL}/about`
         }
+        if (globalConfig?.slug === 'pricing') {
+          return `${serverURL}/pricing`
+        }
         if (globalConfig?.slug === 'giving-back') {
           return `${serverURL}/giving-back`
         }
@@ -57,7 +61,7 @@ export default buildConfig({
     },
   },
   collections: [Leads, Users, Media, JournalPosts, BeforeAfter, WorkGallery, Events, Reviews, FAQs, Policies],
-  globals: [SiteSettings, GivingBack],
+  globals: [SiteSettings, Pricing, GivingBack],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   email: process.env.RESEND_API_KEY

@@ -1,19 +1,27 @@
 import type { Metadata } from 'next'
 import { ServiceDetailPage } from '@/components/ServiceDetailPage'
+import { getPricing } from '@/lib/getPricing'
+import { fromPrice, hourlyPrice, money } from '@/lib/pricing'
 
-export const metadata: Metadata = {
-  title: 'Home Organization in St. Pete & Tampa',
-  description: 'Pantry, closet, garage and playroom organization in St. Petersburg and Tampa. Billed hourly at $60/hour.',
+export async function generateMetadata(): Promise<Metadata> {
+  const pricing = await getPricing()
+  return {
+    title: 'Home Organization in St. Pete & Tampa',
+    description: `Pantry, closet, garage and playroom organization in St. Petersburg and Tampa. Billed hourly at ${money(pricing.orgHourly)}/hour.`,
+  }
 }
 
-export default function HomeOrganizationPage() {
+export const revalidate = 60
+
+export default async function HomeOrganizationPage() {
+  const pricing = await getPricing()
   return (
     <ServiceDetailPage
       crumbLabel="Home Organization"
       eyebrow="Billed hourly"
       title="Home organization in St. Pete and Tampa"
       lede="Pantry, closet, garage, playroom. We sort, we purge, we give everything a home you will still be using in six months."
-      price="$60 / hour"
+      price={hourlyPrice(pricing)}
       priceSub="Billed by the hour because every space is different. Reach out and we'll talk through what yours needs."
       priceCtaHref="/contact"
       priceCtaLabel="Get in touch"
@@ -34,8 +42,8 @@ export default function HomeOrganizationPage() {
         { question: 'What happens to donations?', answer: 'Bagged, loaded, and dropped off locally. You get the receipt.' },
       ]}
       related={[
-        { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: 'From $125' },
-        { href: '/move-in-move-out', icon: 'move', title: 'Move-In / Move-Out', desc: 'For the day the house is empty and every mark is visible. Landlords, buyers and inspectors all look at the same places, and so do we.', price: 'From $335' },
+        { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: fromPrice(pricing, 'standard') },
+        { href: '/move-in-move-out', icon: 'move', title: 'Move-In / Move-Out', desc: 'For the day the house is empty and every mark is visible. Landlords, buyers and inspectors all look at the same places, and so do we.', price: fromPrice(pricing, 'move') },
       ]}
     />
   )

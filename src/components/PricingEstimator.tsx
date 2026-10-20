@@ -3,46 +3,11 @@ import { useMemo, useState } from 'react'
 import { showToast } from '@/lib/toast'
 import { track } from '@/lib/track'
 import { submitLead } from '@/lib/submitLead'
+import { DEFAULT_PRICING, money, serviceBase, type PricedService, type Pricing } from '@/lib/pricing'
 
-const CFG = {
-  rate: 0.11, min: 125, bathExtra: 50, bedExtra: 30, orgRate: 60,
-  wk: 20, bi: 15, mo: 10, conditionAllowance: 10, orgSpread: 10, give: 10,
-}
-
-// What each clean costs relative to a standard visit. The order matters: a move-out
-// does deep-clean work and then opens every cabinet and appliance, so it has to sit
-// above a deep clean, and post-construction above that.
-const SVC_MULT: Record<string, number> = {
-  standard: 1, biz: 1.05, deep: 1.64, move: 2.45, post: 2.75,
-}
-
-// Floor per service. On a small home the multiplier alone is not enough: the bundled
-// extras are flat-priced, so without these a move-out could still land under a deep
-// clean with the fridge, oven and cabinets ticked on.
-const SVC_MIN: Record<string, number> = {
-  standard: CFG.min, biz: CFG.min, deep: 205, move: 335, post: 385,
-}
-
-// Add-ons a service already covers, so they are never billed twice. These mirror the
-// "what is included" list on each service page. Baseboards by hand is never included
-// here — Chelsea treats it as a standalone add-on on every service, including move-out,
-// and asks the customer directly rather than bundling it. Baseboard dusting (the
-// included-for-free version) isn't in ADDONS at all, so it never needs listing here.
-const SVC_INCLUDES: Record<string, readonly string[]> = {
-  move: ['fridge', 'oven', 'cab', 'windows', 'garage'],
-  post: ['windows'],
-}
-
-const ADDONS = [
-  { id: 'fridge', name: 'Inside the fridge', price: 45 },
-  { id: 'oven', name: 'Inside the oven', price: 45 },
-  { id: 'windows', name: 'Interior windows', price: 45 },
-  { id: 'base', name: 'Baseboards by hand', price: 50, unit: '/hour' },
-  { id: 'cab', name: 'Inside cabinets', price: 40 },
-  { id: 'laundry', name: 'Wash and fold', price: 25 },
-  { id: 'pet', name: 'Heavy pet hair', price: 25 },
-  { id: 'garage', name: 'Garage or lanai', price: 50 },
-] as const
+// Fixed parts of the estimate. Everything Chelsea prices herself lives in the Pricing
+// global (src/globals/Pricing.ts) and arrives as the `pricing` prop.
+const CFG = { orgSpread: 10, give: 10 }
 
 const SERVICES = [
   { id: 'standard', label: 'Residential' },
@@ -72,15 +37,10 @@ const FREQ = [
   { id: 'mo', label: 'Monthly' },
 ] as const
 
-const FREQ_PCT: Record<string, number> = { wk: CFG.wk, bi: CFG.bi, mo: CFG.mo, once: 0 }
 const FREQ_NAME: Record<string, string> = { once: 'one time', wk: 'every week', bi: 'every two weeks', mo: 'once a month' }
 
 const BED_OPTIONS = [1, 2, 3, 4, 5, 6]
 const BATH_OPTIONS = [1, 1.5, 2, 2.5, 3, 3.5, 4]
-
-function money(n: number) {
-  return '$' + Math.round(n).toLocaleString('en-US')
-}
 
 function listPhrase(items: string[]) {
   if (items.length < 2) return items[0] ?? ''
@@ -93,12 +53,18 @@ interface PricingEstimatorProps {
   lede?: string
   phone?: string
   email?: string
+  pricing?: Pricing
 }
 
 export function PricingEstimator({
   eyebrow, heading, lede,
-  phone = '305-304-9579', email = 'cmsawyer12@gmail.com',
+  phone = '305-304-9579', email = 'cmsawyer12@gmail.com', pricing = DEFAULT_PRICING,
 }: PricingEstimatorProps = {}) {
+  // Add-ons are keyed by position: the admin list has no stable ids until it is saved.
+  const ADDONS = useMemo(() => pricing.addOns.map((a, i) => ({ ...a, id: String(i) })), [pricing])
+  const FREQ_PCT: Record<string, number> = useMemo(() => ({
+    wk: pricing.discounts.weekly, bi: pricing.discounts.biweekly, mo: pricing.discounts.monthly, once: 0,
+  }), [pricing])
   const phoneDigits = `+1${phone.replace(/\D/g, '')}`
   const [svc, setSvc] = useState<string>('standard')
   const [sqft, setSqft] = useState(1500)
@@ -116,7 +82,7 @@ export function PricingEstimator({
   const effectiveFreq = recurring ? freq : 'once'
 
   const result = useMemo(() => {
-    const included = SVC_INCLUDES[svc] ?? []
+    const included = ADDONS.filter(a => a.includedWith.includes(svc as PricedService)).map(a => a.id)
     const billed = addons.filter(id => !included.includes(id))
     let base: number
     let baseLab = BASE_LABELS[svc] ?? 'Base clean'
@@ -126,14 +92,13 @@ export function PricingEstimator({
 
     if (svc === 'organize') {
       const hours = Math.max(2, Math.min(10, Math.round(sqft / 450)))
-      base = hours * CFG.orgRate
-      baseLab = `${hours} hours at ${money(CFG.orgRate)}/hr`
+      base = hours * pricing.orgHourly
+      baseLab = `${hours} hours at ${money(pricing.orgHourly)}/hr`
       forLine = `Home organization, roughly ${hours} hours`
     } else {
-      base = Math.max(CFG.min, sqft * CFG.rate) * (SVC_MULT[svc] ?? 1)
-      base = Math.max(SVC_MIN[svc] ?? CFG.min, base)
-      bathroomTotal = Math.max(0, bath - 1) * CFG.bathExtra
-      bedroomTotal = bed * CFG.bedExtra
+      base = serviceBase(pricing, svc as PricedService, sqft)
+      bathroomTotal = Math.max(0, bath - 1) * pricing.bathroom
+      bedroomTotal = bed * pricing.bedroom
       forLine = SVC_LABELS[svc]
         + (effectiveFreq === 'once' ? ', one time' : `, ${FREQ_NAME[effectiveFreq]}`)
     }
@@ -144,13 +109,15 @@ export function PricingEstimator({
     const discount = sub * (pct / 100)
     const total = sub - discount
     const lo = Math.round((svc === 'organize' ? total * (1 - CFG.orgSpread / 100) : total) / 5) * 5
-    const hi = Math.round((total * (1 + (svc === 'organize' ? CFG.orgSpread : CFG.conditionAllowance) / 100)) / 5) * 5
+    const hi = Math.round((total * (1 + (svc === 'organize' ? CFG.orgSpread : pricing.rangeSpread) / 100)) / 5) * 5
     const give = Math.max(1, Math.round(total * (CFG.give / 100)))
     const includedNames = included.map(id => ADDONS.find(a => a.id === id)?.name).filter(Boolean) as string[]
     const billedNames = billed.map(id => ADDONS.find(a => a.id === id)?.name).filter(Boolean) as string[]
 
-    return { base, baseLab, forLine, addTotal, discount, pct, lo, hi, give, included, includedNames, billedNames, bathroomTotal, bedroomTotal }
-  }, [svc, sqft, bed, bath, effectiveFreq, addons])
+    const range = lo === hi ? money(lo) : `${money(lo)} to ${money(hi)}`
+
+    return { range, base, baseLab, forLine, addTotal, discount, pct, lo, hi, give, included, includedNames, billedNames, bathroomTotal, bedroomTotal }
+  }, [svc, sqft, bed, bath, effectiveFreq, addons, pricing, ADDONS, FREQ_PCT])
 
   const toggleAddon = (id: string) => {
     setAddons(prev => prev.includes(id) ? prev.filter(a => a !== id) : [...prev, id])
@@ -168,7 +135,7 @@ export function PricingEstimator({
       ...(svc !== 'organize' ? ['Estimate range accounts for home condition, from good condition to extra scrubbing.'] : []),
       ...(result.includedNames.length ? [`Already included: ${result.includedNames.join(', ')}`] : []),
       `Add-ons: ${result.billedNames.length ? result.billedNames.join(', ') : 'none'}`,
-      `Site estimate: ${money(result.lo)} to ${money(result.hi)}`, '',
+      `Site estimate: ${result.range}`, '',
     ]
     if (qNote) lines.push(`Notes: ${qNote}`)
     return lines.join('\n')
@@ -180,7 +147,7 @@ export function PricingEstimator({
     submitLead({
       name: qName, phone: qPhone, email: qEmail || undefined,
       source: 'quote-estimator', summary: summary(),
-      estimateRange: `${money(result.lo)} to ${money(result.hi)}`,
+      estimateRange: result.range,
     })
     window.location.href = `sms:${phoneDigits}?&body=${encodeURIComponent(summary())}`
     showToast('Opening your messages app with the details filled in.')
@@ -192,7 +159,7 @@ export function PricingEstimator({
     submitLead({
       name: qName, phone: qPhone, email: qEmail || undefined,
       source: 'quote-estimator', summary: summary(),
-      estimateRange: `${money(result.lo)} to ${money(result.hi)}`,
+      estimateRange: result.range,
     })
     window.location.href = `mailto:${email}?subject=${encodeURIComponent('Quote request: ' + result.forLine)}&body=${encodeURIComponent(summary())}`
     showToast('Opening your email with the details filled in.')
@@ -310,7 +277,7 @@ export function PricingEstimator({
                       <span style={{ display: 'flex', alignItems: 'center', gap: '.6rem' }}>
                         <span className="box" />{a.name}
                       </span>
-                      <i>{inc ? 'Included' : `+${money(a.price)}${'unit' in a ? a.unit : ''}`}</i>
+                      <i>{inc ? 'Included' : `+${money(a.price)}${a.perHour ? '/hour' : ''}`}</i>
                     </button>
                   )
                 })}
@@ -321,16 +288,16 @@ export function PricingEstimator({
           <div className="result rv rv-d2">
             <div className="bloom">
               <p className="res-lab">Request a quote</p>
-              <p className="res-range">{money(result.lo)} <span className="to">to</span> {money(result.hi)}</p>
-              {svc !== 'organize' && <p className="res-fine" style={{ marginTop: '.3rem' }}>Lower end: good condition · Upper end: extra scrubbing</p>}
+              <p className="res-range">{result.lo === result.hi ? money(result.lo) : <>{money(result.lo)} <span className="to">to</span> {money(result.hi)}</>}</p>
+              {svc !== 'organize' && result.lo !== result.hi && <p className="res-fine" style={{ marginTop: '.3rem' }}>Lower end: good condition · Upper end: extra scrubbing</p>}
               <p className="res-for">{result.forLine}</p>
               <div className="res-rule" />
               <div className="res-row"><span>{result.baseLab}</span><b>{money(result.base)}</b></div>
               {result.bathroomTotal > 0 && (
-                <div className="res-row"><span>Additional bathrooms ({bath - 1} × {money(CFG.bathExtra)})</span><b>{money(result.bathroomTotal)}</b></div>
+                <div className="res-row"><span>Additional bathrooms ({bath - 1} × {money(pricing.bathroom)})</span><b>{money(result.bathroomTotal)}</b></div>
               )}
               {result.bedroomTotal > 0 && (
-                <div className="res-row"><span>Bedrooms ({bed} × {money(CFG.bedExtra)})</span><b>{money(result.bedroomTotal)}</b></div>
+                <div className="res-row"><span>Bedrooms ({bed} × {money(pricing.bedroom)})</span><b>{money(result.bedroomTotal)}</b></div>
               )}
               {result.includedNames.length > 0 && (
                 <div className="res-row"><span>Includes {listPhrase(result.includedNames.map(n => n.toLowerCase()))}</span><b>Included</b></div>

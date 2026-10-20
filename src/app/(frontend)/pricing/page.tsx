@@ -6,6 +6,8 @@ import { PricingEstimator } from "@/components/PricingEstimator";
 import { FaqAccordion, type AccordionItem } from "@/components/Accordion";
 import { ContactSection } from "@/components/ContactSection";
 import { getSiteSettings } from "@/lib/getSiteSettings";
+import { getPricing } from "@/lib/getPricing";
+import { money, type Pricing } from "@/lib/pricing";
 
 export const metadata: Metadata = {
   title: "Cleaning Prices in St. Pete & Tampa | Instant Estimate",
@@ -15,11 +17,11 @@ export const metadata: Metadata = {
 
 export const revalidate = 60;
 
-const FALLBACK_FAQS: AccordionItem[] = [
+const fallbackFaqs = (pricing: Pricing): AccordionItem[] => [
   {
     question: "How much does house cleaning cost in St. Pete and Tampa?",
     answer:
-      "A standard clean starts from $125 for a small studio. A deep clean starts from $205, and a move-in or move-out clean from $335 with the fridge, oven and cabinets already included. Square footage, bathroom count and the current condition of the home move the number. Fill out the quote builder and Chelsea will reach out with a custom price.",
+      `A standard clean starts from ${money(pricing.services.standard.minimum)} for a small studio. A deep clean starts from ${money(pricing.services.deep.minimum)}, and a move-in or move-out clean from ${money(pricing.services.move.minimum)} with the fridge, oven and cabinets already included. Square footage, bathroom count and the current condition of the home move the number. Fill out the quote builder and Chelsea will reach out with a custom price.`,
   },
   {
     question: "How do I pay?",
@@ -38,8 +40,8 @@ const FALLBACK_FAQS: AccordionItem[] = [
 ];
 
 export default async function PricingPage() {
-  const { phone, email, areas } = await getSiteSettings();
-  let faqs: AccordionItem[] = FALLBACK_FAQS;
+  const [{ phone, email, areas }, pricing] = await Promise.all([getSiteSettings(), getPricing()]);
+  let faqs: AccordionItem[] = fallbackFaqs(pricing);
   try {
     const payload = await getPayload({ config });
     const result = await payload.find({
@@ -86,7 +88,7 @@ export default async function PricingPage() {
         </div>
       </header>
 
-      <PricingEstimator phone={phone} email={email} />
+      <PricingEstimator phone={phone} email={email} pricing={pricing} />
 
       <section className="sec sec--tint">
         <div className="wrap">
@@ -94,8 +96,8 @@ export default async function PricingPage() {
             <p className="eyebrow">How the quote is built</p>
             <h2>Nothing here is a mystery.</h2>
             <p className="lede">
-              Square footage sets the base. Each bedroom adds $30, and each
-              bathroom after the first adds $50. The estimate range accounts for
+              Square footage sets the base. Each bedroom adds {money(pricing.bedroom)}, and each
+              bathroom after the first adds {money(pricing.bathroom)}. The estimate range accounts for
               home condition, from good condition to needing extra scrubbing.
               Deep cleans and move-outs take longer so they cost more. Booking
               regularly takes cost out, because a maintained home is faster to
@@ -118,8 +120,8 @@ export default async function PricingPage() {
               <div>
                 <h3>Rooms that take real time</h3>
                 <p>
-                  Each bedroom adds $30, and every bathroom after the first adds
-                  $50 to account for the extra labor and products.
+                  Each bedroom adds {money(pricing.bedroom)}, and every bathroom
+                  after the first adds {money(pricing.bathroom)} to account for the extra labor and products.
                 </p>
               </div>
             </div>

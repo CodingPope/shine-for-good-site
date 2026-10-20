@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(kill %1)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(npm run *)",
+      "Bash(echo \"started $!\")",
+      "Bash(curl -s -o /dev/null -w \"admin: %{http_code}\\\\n\" http://localhost:3000/admin)",
+      "Bash(lsof -ti:3000)",
+      "Bash(xargs kill -9)",
+      "Bash(NODE_OPTIONS='--no-deprecation --max-old-space-size=8000' npx next build)",
+      "Read(//tmp/**)",
+      "Bash(npx eslint *)",
+      "Bash(find ~ -maxdepth 4 -iname \"vanna-trading-terminal\" -o -iname \"SocialCircle\" 2>/dev/null | grep -v node_modules)",
+      "Read(//Users/joepope/**)"
+    ]
+  }
+}

@@ -5,6 +5,8 @@ import config from '@payload-config'
 import { FaqAccordion, type AccordionItem } from '@/components/Accordion'
 import { getSiteSettings } from '@/lib/getSiteSettings'
 import type { Policy } from '@/payload-types'
+import { getPricing } from '@/lib/getPricing'
+import { addOnPrice, type Pricing } from '@/lib/pricing'
 
 export const metadata: Metadata = {
   title: 'Policies',
@@ -24,10 +26,10 @@ const FALLBACK_PAYMENT: AccordionItem[] = [
   { question: 'Pricing & service changes', answer: 'Quotes are based on the information provided at booking. If the condition of the home differs significantly from what was described, pricing may need to be adjusted. Any additional charges are communicated before extra work begins — nothing gets added to the bill without your agreement first.' },
 ]
 
-const FALLBACK_DURING: AccordionItem[] = [
+const fallbackDuring = (pricing: Pricing): AccordionItem[] => [
   { question: 'Breakage & damage', answer: 'Every care is taken when cleaning your home. Please let Chelsea know ahead of time about anything fragile, sentimental, or delicate. Shine for Good is not responsible for damage caused by pre-existing wear, improperly installed items, or fragile items that were not disclosed before the appointment.' },
   { question: 'Supplies & equipment', answer: 'Chelsea brings professional cleaning supplies and equipment to every appointment. If you have a preference for specific products — for a particular surface, an allergy, or a personal preference — just let her know in advance or leave them out and she will use them.' },
-  { question: 'Pets & animals', answer: 'Pets are welcome. Please mention them when you book — especially if they are anxious, reactive, or need to be secured during the visit. Homes with heavy shedding have a $25 add-on since it adds real time to the clean. None of this is a barrier, just useful to know upfront so the visit goes smoothly.' },
+  { question: 'Pets & animals', answer: `Pets are welcome. Please mention them when you book — especially if they are anxious, reactive, or need to be secured during the visit. Homes with heavy shedding have a ${addOnPrice(pricing, 'Heavy pet hair')} add-on since it adds real time to the clean. None of this is a barrier, just useful to know upfront so the visit goes smoothly.` },
 ]
 
 const FALLBACK_RECURRING: AccordionItem[] = [
@@ -42,10 +44,10 @@ function toItems(docs: Policy[]): AccordionItem[] {
 }
 
 export default async function PoliciesPage() {
-  const { phone } = await getSiteSettings()
+  const [{ phone }, pricing] = await Promise.all([getSiteSettings(), getPricing()])
   let scheduling = FALLBACK_SCHEDULING
   let payment = FALLBACK_PAYMENT
-  let during = FALLBACK_DURING
+  let during = fallbackDuring(pricing)
   let recurring = FALLBACK_RECURRING
   try {
     const payload = await getPayload({ config })

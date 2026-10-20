@@ -1,19 +1,27 @@
 import type { Metadata } from 'next'
 import { ServiceDetailPage } from '@/components/ServiceDetailPage'
+import { getPricing } from '@/lib/getPricing'
+import { fromPrice, money } from '@/lib/pricing'
 
-export const metadata: Metadata = {
-  title: 'Move-In / Move-Out Cleaning in St. Pete & Tampa',
-  description: 'Move-in and move-out cleaning in St. Petersburg and Tampa. Inside the cabinets, oven and fridge included, not billed as extras. From $335.',
+export async function generateMetadata(): Promise<Metadata> {
+  const pricing = await getPricing()
+  return {
+    title: 'Move-In / Move-Out Cleaning in St. Pete & Tampa',
+    description: `Move-in and move-out cleaning in St. Petersburg and Tampa. Inside the cabinets, oven and fridge included, not billed as extras. From ${money(pricing.services.move.minimum)}.`,
+  }
 }
 
-export default function MoveInMoveOutPage() {
+export const revalidate = 60
+
+export default async function MoveInMoveOutPage() {
+  const pricing = await getPricing()
   return (
     <ServiceDetailPage
       crumbLabel="Move-In / Move-Out"
       eyebrow="For empty houses"
       title="Move-in and move-out cleaning"
       lede="Everything in a standard clean and a deep clean, plus every cabinet, drawer and appliance opened up. For the day the house is empty and every mark is visible."
-      price="From $335"
+      price={fromPrice(pricing, 'move')}
       priceSub="Final price depends on your space and what it needs. Fill out the form and Chelsea will get back to you with a custom quote."
       priceCtaHref="/pricing"
       priceCtaLabel="Request a quote"
@@ -36,8 +44,8 @@ export default function MoveInMoveOutPage() {
         { question: 'Do you clean carpets?', answer: 'Not steam cleaning, no. Carpets are vacuumed thoroughly and I can point you to a local company for extraction if your lease requires it.' },
       ]}
       related={[
-        { href: '/deep-cleaning', icon: 'deep', title: 'Deep Cleaning', desc: 'Everything in a standard clean, plus the parts that get skipped for months. This is the one that resets a house.', price: 'From $205' },
-        { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: 'From $125' },
+        { href: '/deep-cleaning', icon: 'deep', title: 'Deep Cleaning', desc: 'Everything in a standard clean, plus the parts that get skipped for months. This is the one that resets a house.', price: fromPrice(pricing, 'deep') },
+        { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: fromPrice(pricing, 'standard') },
       ]}
     />
   )

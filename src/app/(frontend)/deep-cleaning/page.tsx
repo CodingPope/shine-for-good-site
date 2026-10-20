@@ -1,19 +1,27 @@
 import type { Metadata } from 'next'
 import { ServiceDetailPage } from '@/components/ServiceDetailPage'
+import { getPricing } from '@/lib/getPricing'
+import { fromPrice, money, addOnPrice } from '@/lib/pricing'
 
-export const metadata: Metadata = {
-  title: 'Deep Cleaning Service in St. Pete & Tampa',
-  description: 'Deep house cleaning in St. Petersburg and Tampa. Baseboards, grout, blinds, inside appliances, behind furniture. From $205. Recommended for a first visit.',
+export async function generateMetadata(): Promise<Metadata> {
+  const pricing = await getPricing()
+  return {
+    title: 'Deep Cleaning Service in St. Pete & Tampa',
+    description: `Deep house cleaning in St. Petersburg and Tampa. Baseboards, grout, blinds, inside appliances, behind furniture. From ${money(pricing.services.deep.minimum)}. Recommended for a first visit.`,
+  }
 }
 
-export default function DeepCleaningPage() {
+export const revalidate = 60
+
+export default async function DeepCleaningPage() {
+  const pricing = await getPricing()
   return (
     <ServiceDetailPage
       crumbLabel="Deep Cleaning"
       eyebrow="Recommended for a first visit"
       title="Deep cleaning that actually resets a house"
       lede="Everything in a standard clean, plus the parts that get skipped for months. This is the one that resets a house."
-      price="From $205"
+      price={fromPrice(pricing, 'deep')}
       priceSub="Final price depends on your space and what it needs. Fill out the form and Chelsea will get back to you with a custom quote."
       priceCtaHref="/pricing"
       priceCtaLabel="Request a quote"
@@ -32,11 +40,11 @@ export default function DeepCleaningPage() {
       faq={[
         { question: 'Do I need a deep clean before starting recurring visits?', answer: 'Usually yes, for a first visit. If the home has been professionally cleaned within the last couple of months, a standard clean is often enough. Send photos and you will get an honest answer rather than an upsell.' },
         { question: 'How often should a Florida home get one?', answer: 'Every three to four months for most homes here. Closer to every ten weeks if you are near the water, have pets, or run the AC hard.' },
-        { question: 'Does it include inside the oven and fridge?', answer: 'On a deep clean those are add-ons rather than standard, because plenty of people do not want them touched. Both are $45 in the estimate builder. A move-in or move-out clean is different — the fridge, oven and inside the cabinets are already in that price.' },
+        { question: 'Does it include inside the oven and fridge?', answer: `On a deep clean those are add-ons rather than standard, because plenty of people do not want them touched. Both are ${addOnPrice(pricing, 'Inside the fridge')} in the estimate builder. A move-in or move-out clean is different — the fridge, oven and inside the cabinets are already in that price.` },
       ]}
       related={[
-        { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: 'From $125' },
-        { href: '/move-in-move-out', icon: 'move', title: 'Move-In / Move-Out', desc: 'For the day the house is empty and every mark is visible. Landlords, buyers and inspectors all look at the same places, and so do we.', price: 'From $335' },
+        { href: '/residential-cleaning', icon: 'residential', title: 'Residential Cleaning', desc: 'The regular reset. Every room touched, every surface handled, the house put back the way you like it.', price: fromPrice(pricing, 'standard') },
+        { href: '/move-in-move-out', icon: 'move', title: 'Move-In / Move-Out', desc: 'For the day the house is empty and every mark is visible. Landlords, buyers and inspectors all look at the same places, and so do we.', price: fromPrice(pricing, 'move') },
       ]}
     />
   )
