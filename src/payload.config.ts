@@ -85,13 +85,17 @@ export default buildConfig({
   }),
   sharp,
   plugins: [
-    ...(process.env.BLOB_READ_WRITE_TOKEN
-      ? [
-          vercelBlobStorage({
-            collections: { media: true },
-            token: process.env.BLOB_READ_WRITE_TOKEN,
-          }),
-        ]
-      : []),
+    // Register even without a local token so the admin import map always
+    // includes the client upload handler used in production.
+    vercelBlobStorage({
+      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      collections: {
+        // Media is public already. Serve it from Blob's CDN rather than
+        // passing every image through a serverless function.
+        media: { disablePayloadAccessControl: true },
+      },
+      clientUploads: true,
+      token: process.env.BLOB_READ_WRITE_TOKEN || '',
+    }),
   ],
 })

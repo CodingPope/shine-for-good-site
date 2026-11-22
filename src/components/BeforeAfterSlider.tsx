@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import { useRef, useState, useEffect, useCallback } from 'react'
 
 interface Props {
@@ -6,9 +7,11 @@ interface Props {
   afterSrc: string
   beforeAlt?: string
   afterAlt?: string
+  priority?: boolean
+  sizes?: string
 }
 
-export function BeforeAfterSlider({ beforeSrc, afterSrc, beforeAlt = 'Before', afterAlt = 'After' }: Props) {
+export function BeforeAfterSlider({ beforeSrc, afterSrc, beforeAlt = 'Before', afterAlt = 'After', priority = false, sizes = '(max-width: 760px) 100vw, 50vw' }: Props) {
   const boxRef = useRef<HTMLDivElement>(null)
   const rangeRef = useRef<HTMLInputElement>(null)
   const [pos, setPos] = useState(50)
@@ -54,8 +57,12 @@ export function BeforeAfterSlider({ beforeSrc, afterSrc, beforeAlt = 'Before', a
       className="ba"
       style={{ '--sp': `${pos}%` } as React.CSSProperties}
     >
-      <div className="ba-img ba-before" role="img" aria-label={beforeAlt} style={{ backgroundImage: `url(${beforeSrc})` }} />
-      <div className="ba-img ba-after" role="img" aria-label={afterAlt} style={{ backgroundImage: `url(${afterSrc})` }} />
+      <div className="ba-img ba-before">
+        <Image src={beforeSrc} alt={beforeAlt} fill sizes={sizes} priority={priority} draggable={false} style={{ objectFit: 'cover' }} />
+      </div>
+      <div className="ba-img ba-after">
+        <Image src={afterSrc} alt={afterAlt} fill sizes={sizes} priority={priority} draggable={false} style={{ objectFit: 'cover' }} />
+      </div>
       <span className="ba-tag ba-tag--b">Before</span>
       <span className="ba-tag ba-tag--a">After</span>
       <div className="ba-handle"><div className="ba-knob"><i /><i /></div></div>

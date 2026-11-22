@@ -35,7 +35,8 @@ export default async function WorkPage() {
     baItems = baResult.docs
     gallery = galleryResult.docs
     if (reviewsResult.docs.length) reviews = reviewsResult.docs
-  } catch {
+  } catch (error) {
+    console.error('Unable to load work page content', error)
     baItems = []
     gallery = []
   }
@@ -76,6 +77,8 @@ export default async function WorkPage() {
                 afterSrc={featuredAfter.url}
                 beforeAlt={featuredBefore.alt || 'Before'}
                 afterAlt={featuredAfter.alt || 'After'}
+                priority
+                sizes="(max-width: 1200px) 100vw, 1200px"
               />
               {featured.caption && (
                 <p style={{ textAlign: 'center', marginTop: '1rem', opacity: .7, fontSize: '.9rem' }}>
@@ -92,7 +95,7 @@ export default async function WorkPage() {
           {/* Additional before/afters — each its own draggable comparison, not a flat photo */}
           {baItems.length > 1 && (
             <div className="rv rv-d2 ba-grid" style={{ marginTop: 'clamp(1.6rem,3vw,2.4rem)' }}>
-              {baItems.slice(1).map(item => {
+              {baItems.filter(item => item.id !== featured?.id).map(item => {
                 const bef = item.beforeImage as Media | null
                 const aft = item.afterImage as Media | null
                 if (!bef?.url || !aft?.url) return null

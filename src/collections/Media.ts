@@ -1,9 +1,25 @@
-import type { CollectionConfig } from 'payload'
+import { APIError, type CollectionConfig } from 'payload'
 
 export const Media: CollectionConfig = {
   slug: 'media',
   access: {
     read: () => true,
+  },
+  hooks: {
+    beforeOperation: [
+      ({ operation }) => {
+        if (
+          (operation === 'create' || operation === 'update') &&
+          process.env.VERCEL &&
+          !process.env.BLOB_READ_WRITE_TOKEN
+        ) {
+          throw new APIError(
+            'Image storage is not configured. Connect Vercel Blob and set BLOB_READ_WRITE_TOKEN before uploading photos.',
+            503,
+          )
+        }
+      },
+    ],
   },
   admin: {
     useAsTitle: 'alt',
